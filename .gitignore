@@ -29,3 +29,5 @@ hs_err_pid*
 /apache-tomcat-9.0.1
 .settings/org.eclipse.wst.ws.service.policy.prefs
 WebContent/WEB-INF/
+.recommenders/
+ChallengeMe/.classpath
