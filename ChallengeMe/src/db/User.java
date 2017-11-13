@@ -4,15 +4,17 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.sql.Statement;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 /**
  * Checklist
  * ---------
- * [ ] `add` static method for creating a User
- * [ ] `update` static method for updating a User
- * [ ] `save` method for creating/updating an existing User
+ * [X] `add` static method for creating a User
+ * [X] `update` static method for updating a User
+ * [X] `save` method for creating/updating an existing User
  * [ ] include created time
  * [ ] include updated time
  * 
@@ -22,31 +24,40 @@ import java.util.List;
 public class User
 {
 	public static final String TBL_NAME = "users";
+	
 	protected static final Boolean LAZY_LOAD = true;
 	
 	private static Connection connection = Database.getConnection(true);
 	
 	private Long id;
 	private String username;
+	private String password;
 	private String name;
 	private String bio;
 	
 	private List<Challenge> challenges;
 	private List<Challenge> completedChallenges;
 	private List<Challenge> interestedChallenges;
+	private Date createAt;
 	
-	public User (Long id, String username, String name, String bio)
+	public static class UserNotFoundException extends Exception {
+		private static final long serialVersionUID = -7465057662586463032L;
+	}
+
+	public User (Long id, String username, String password, String name, String bio)
 	{
 		this.id = id;
 		this.username = username;
+		this.password = password;
 		this.name = name;
 		this.bio = bio;
 	}
 	
-	public User (Long id, String username, String name, String bio, List<Challenge> challenges, List<Challenge> completedChallenges,  List<Challenge> interestedChallenges)  
+	public User (Long id, String username, String password, String name, String bio, List<Challenge> challenges, List<Challenge> completedChallenges,  List<Challenge> interestedChallenges)  
 	{
 		this.id = id;
 		this.username = username;
+		this.password = password;
 		this.name = name;
 		this.bio = bio;
 		this.challenges = challenges;
@@ -68,6 +79,16 @@ public class User
 	{
 		this.username = username;
 	}
+	
+	public String getPassword ()
+	{
+		return password;
+	}
+
+	public void setPassword (String password)
+	{
+		this.password = password;
+	}
 
 	public String getName ()
 	{
@@ -87,6 +108,11 @@ public class User
 	public void setBio (String bio)
 	{
 		this.bio = bio;
+	}
+	
+	public Date getCreateAtDate() 
+	{
+		return createAt;
 	}
 
 	public List<Challenge> getChallenges ()
@@ -124,7 +150,17 @@ public class User
 	public void save ()
 	throws SQLException
 	{
-		
+		if (id == null) {
+			// adding a challenge
+			long userId = User.add(username, password, name, bio);
+			// update the id
+			id = userId;
+		}
+		else {
+			User.update(id, username, name, bio);
+		}
+		createAt = new Date();
+		assert(id != null);
 	}
 	
 	/**
@@ -135,14 +171,21 @@ public class User
 	 * @throws SQLException
 	 */
 	public static User get (Long id)
-	throws SQLException
+	throws SQLException, UserNotFoundException
 	{
 		PreparedStatement ps = connection.prepareStatement("SELECT * FROM ? WHERE id=?");
 		ps.setString(1, TBL_NAME);
 		ps.setLong(2, id);
 		
 		ResultSet rs = ps.executeQuery();
-		return User.getFromResultSet(rs, LAZY_LOAD);
+
+		if (!rs.next()) {
+			// user not found, throw an error
+			throw new UserNotFoundException();
+		}
+		else {
+			return User.getFromResultSet(rs, LAZY_LOAD);
+		}
 	}
 	
 	/**
@@ -153,38 +196,108 @@ public class User
 	 * @throws SQLException
 	 */
 	public static User get (String username)
-	throws SQLException
+	throws SQLException, UserNotFoundException
 	{
 		PreparedStatement ps = connection.prepareStatement("SELECT * FROM ? WHERE username=?");
 		ps.setString(1, TBL_NAME);
 		ps.setString(2, username);
 		
 		ResultSet rs = ps.executeQuery();
-		return User.getFromResultSet(rs, LAZY_LOAD);
+		if (!rs.next()) {
+			// user not found, throw an error
+			throw new UserNotFoundException();
+		}
+		else {
+			return User.getFromResultSet(rs, LAZY_LOAD);
+		}
 	}
 	
+	/**
+	 * Add a new user into the database.
+	 * 
+	 * NOTE: Does not check for whether the user exists or not.
+	 * 
+	 * @param username
+	 * @param password
+	 * @param name
+	 * @param bio
+	 * @return
+	 * @throws SQLException
+	 */
+	public static long add (String username, String password, String name, String bio)
+	throws SQLException
+	{
+		PreparedStatement ps = connection.prepareStatement("INSERT INTO ? (username, password, name, bio) VALUES (?, ?, ?, ?)", Statement.RETURN_GENERATED_KEYS);
+		ps.setString(1, TBL_NAME);
+		ps.setString(2, username);
+		ps.setString(3, password);
+		ps.setString(4, name);
+		ps.setString(5, bio);
+				
+		int userCreated = ps.executeUpdate();
+		assert (userCreated == 0 || userCreated == 1);
+		
+		if (userCreated == 0) {
+			throw new SQLException("Failed to create challenge.");
+		}
+		
+		Long userId = ps.getGeneratedKeys().getLong(1);
+		return userId;
+	}
+	
+	public static void update (Long userId, String username, String name, String bio)
+	throws SQLException
+	{
+		PreparedStatement ps = connection.prepareStatement("UPDATE ? SET username=?, name=?, bio=? WHERE id=?");
+		ps.setString(1, TBL_NAME);
+		ps.setString(2, username);
+		ps.setString(3, name);
+		ps.setString(4, bio);
+		
+		int usersUpdated = ps.executeUpdate();
+		assert (usersUpdated == 0 || usersUpdated == 1);
+	}
 	
 	protected static User getFromResultSet (ResultSet rs, boolean lazyLoad)
 	throws SQLException
 	{
 		Long id = rs.getLong("id");
 		String username = rs.getString("username");
+		String password = rs.getString("password");
 		String name = rs.getString("name");
 		String bio = rs.getString("bio");
 		
 		User user = null;
 		
 		if (lazyLoad) {
-			user = new User(id, username, name, bio);
+			user = new User(id, username, password, name, bio);
 		}
 		else {
 	  		List<Challenge> challenges = getChallenges(id);
 	 		List<Challenge> completedChallenges = getCompletedChallenges(id);
 	 		List<Challenge> interestedChallenges = getInterestedChallenges(id);
-	 		user = new User(id, username, name, bio, challenges, completedChallenges, interestedChallenges);
+	 		user = new User(id, username, password, name, bio, challenges, completedChallenges, interestedChallenges);
 		}
 		
 		return user;
+	}
+	
+	/**
+	 * Change the password of a user.
+	 * 
+	 * @param userId
+	 * @param password
+	 * @return
+	 */
+	public static void changePassword (Long userId, String password)
+	throws SQLException
+	{
+		PreparedStatement ps = connection.prepareStatement("UPDATE ? SET password=? WHERE id=?");
+		ps.setString(1, TBL_NAME);
+		ps.setString(4, password);
+		
+		int usersUpdated = ps.executeUpdate();
+		assert (usersUpdated == 0 || usersUpdated == 1);
 	}
 	
 	private static List<Challenge> getChallenges (Long userId)
@@ -246,6 +359,42 @@ public class User
 		return rs.next();
 	}
 	
+	public static boolean presentInterest (Long userId, Long challengeId)
+	throws SQLException
+	{
+		// don't do anything if user is already interested in the challenge
+		if (checkInterest(userId, challengeId)) {
+			return false;
+		}
+		
+		PreparedStatement ps = connection.prepareStatement("INSERT INTO ? (userId, challengeId) VALUES (?, ?)");
+		ps.setString(1, InterestedChallenge.TBL_NAME);
+		ps.setLong(2, userId);
+		ps.setLong(3, challengeId);
+		
+		int interestedPresented = ps.executeUpdate();
+		assert (interestedPresented == 0 || interestedPresented == 1);
+		return (interestedPresented == 1);
+	}
+	
+	public static boolean deleteInterest (Long userId, Long challengeId)
+	throws SQLException
+	{
+		// don't do anything if user is already interested in the challenge
+		if (!checkInterest(userId, challengeId)) {
+			return false;
+		}
+		
+		PreparedStatement ps = connection.prepareStatement("DELETE FROM ? WHERE userId=? AND challengeId=?");
+		ps.setString(1, InterestedChallenge.TBL_NAME);
+		ps.setLong(2, userId);
+		ps.setLong(3, challengeId);
+		
+		int interestDeleted = ps.executeUpdate();
+		assert (interestDeleted == 0 || interestDeleted == 1);
+		return (interestDeleted == 1);
+	}	
+	
 	public static boolean checkCompletion (Long userId, Long challengeId)
 	throws SQLException
 	{
@@ -256,6 +405,42 @@ public class User
 		
 		ResultSet rs = ps.executeQuery();
 		return rs.next();
+	}
+	
+	public static boolean markAsComplete (Long userId, Long challengeId)
+	throws SQLException
+	{
+		// don't do anything if user is already interested in the challenge
+		if (checkCompletion(userId, challengeId)) {
+			return false;
+		}
+		
+		PreparedStatement ps = connection.prepareStatement("INSERT INTO ? (userId, challengeId) VALUES (?, ?)");
+		ps.setString(1, CompletedChallenge.TBL_NAME);
+		ps.setLong(2, userId);
+		ps.setLong(3, challengeId);
+		
+		int markedComplete = ps.executeUpdate();
+		assert (markedComplete == 0 || markedComplete == 1);
+		return (markedComplete == 1);
+	}
+	
+	public static boolean markAsIncomplete (Long userId, Long challengeId)
+	throws SQLException
+	{
+		// don't do anything if user is already interested in the challenge
+		if (!checkCompletion(userId, challengeId)) {
+			return false;
+		}
+		
+		PreparedStatement ps = connection.prepareStatement("DELETE FROM ? WHERE userId=? AND challengeId=?");
+		ps.setString(1, CompletedChallenge.TBL_NAME);
+		ps.setLong(2, userId);
+		ps.setLong(3, challengeId);
+		
+		int markedIncomplete = ps.executeUpdate();
+		assert (markedIncomplete == 0 || markedIncomplete == 1);
+		return (markedIncomplete == 1);
 	}
 	
 }

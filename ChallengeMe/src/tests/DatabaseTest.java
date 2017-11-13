@@ -1,16 +1,23 @@
 package tests;
+import java.sql.Connection;
+import java.sql.SQLException;
+
 import org.junit.jupiter.api.Test;
 
 import db.Database;
+import junit.framework.TestCase;
 
-class DatabaseTest {
+class DatabaseTest extends TestCase {
 
 	@Test
-	void test() {
-//		fail("Not yet implemented");
+	void testDBConnection() throws SQLException {
 		Database db = new Database();
-		db.getConnection(true);
-		
+		Connection conn = db.getConnection(true);
+		assertEquals("dbo", conn.getSchema());
 	}
 
+	@Test
+	void testChallenge() {
+		
+	}
 }

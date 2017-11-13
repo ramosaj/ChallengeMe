@@ -6,14 +6,17 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
+
+import db.User.UserNotFoundException;
 
 /**
  * Checklist
  * ---------
  * [X] `save` for updating
  * [X] include categories
- * [ ] implement `replaceCategories` static method
+ * [X] implement `replaceCategories` static method
  * [ ] include created time
  * [ ] include updated time
  * 
@@ -41,6 +44,8 @@ public class Challenge
 	private List<User> interestedUsers;
 
 	private User user;
+	
+	private Date createAt = new Date();
 	
 	// for creating 
 	public Challenge (User user, String title, String description, List<String> categories)
@@ -113,6 +118,11 @@ public class Challenge
 	{
 		return user;
 	}
+		
+	public Date getCreateAtDate() 
+	{
+		return createAt;
+	}
 
 	public List<User> getCompletedUsers ()
 	throws SQLException
@@ -168,7 +178,7 @@ public class Challenge
 		// challenge could still be updated if categories failed to be replaced
 		// violates atomicity, but whatever
 		Challenge.replaceCategories(id, categories);
-		
+		createAt = new Date();
 		assert(id != null);
 	}
 	
@@ -277,8 +287,13 @@ public class Challenge
 		Long userId = rs.getLong("userId");
 		String title = rs.getString("title");
 		String description = rs.getString("description");
-		
-		User user = User.get(userId);
+		User user = null;
+		try {
+			user = User.get(userId);
+		}
+		catch (UserNotFoundException unfe) {
+			unfe.printStackTrace();
+		}
 		// TODO: get categories
 		List<String> categories = new ArrayList<>();
 		
@@ -307,7 +322,16 @@ public class Challenge
 		List<User> completedUsers = new ArrayList<>(); 
 		while (rs.next()) {
 			Long userId = rs.getLong("userId");
-			completedUsers.add(User.get(userId));
+			
+			User user = null;
+			try {
+				user = User.get(userId);
+			}
+			catch (UserNotFoundException unfe) {
+				unfe.printStackTrace();
+			}
+			
+			completedUsers.add(user);
 		}
 		return completedUsers;
 	}
@@ -320,11 +344,19 @@ public class Challenge
 		ps.setLong(2, challengeId);
 		
 		ResultSet rs = ps.executeQuery();
-		List<User> completedUsers = new ArrayList<>(); 
+		List<User> interestedUsers = new ArrayList<>(); 
 		while (rs.next()) {
 			Long userId = rs.getLong("userId");
-			completedUsers.add(User.get(userId));
+			User user = null;
+			try {
+				user = User.get(userId);
+			}
+			catch (UserNotFoundException unfe) {
+				unfe.printStackTrace();
+			}
+			
+			interestedUsers.add(user);
 		}
-		return completedUsers;
+		return interestedUsers;
 	}
 }
