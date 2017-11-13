@@ -2,6 +2,6 @@ package db;
 
 public class InterestedChallenge {
 
-	public static final String TBL_NAME = "interested";
+	public static final String TBL_NAME = "InterestedChallengeJunction";
 	
 }

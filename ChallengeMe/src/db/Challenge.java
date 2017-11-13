@@ -22,7 +22,7 @@ import java.util.List;
  */
 public class Challenge
 {	
-	public static final String TBL_NAME = "challenges";
+	public static final String TBL_NAME = "Challenge";
 	
 	// Lazy loading is so that for more expensive queries such as
 	// finding the users who completed a challenge or are interested
@@ -235,7 +235,7 @@ public class Challenge
 	public static void update (Long challengeId, String title, String description)
 	throws SQLException
 	{
-		PreparedStatement ps = connection.prepareStatement("UPDATE ? SET title=?, description=? WHERE id=?");
+		PreparedStatement ps = connection.prepareStatement("UPDATE ? SET title=?, description=? WHERE Challenge.challengeId=?");
 		ps.setString(1, TBL_NAME);
 		ps.setString(2, title);
 		ps.setString(3, description);
@@ -254,7 +254,12 @@ public class Challenge
 	public static void replaceCategories (Long challengeId, List<String> categories)
 	throws SQLException
 	{
-		// TODO
+		PreparedStatement ps = connection.prepareStatement("UPDATE ? SET categories=? WHERE Challenge.challengeId=?");
+		ps.setString(1, TBL_NAME);
+		ps.setString(2, String.join(", ", categories));
+		
+		int categoriesUpdated = ps.executeUpdate();
+		assert (categoriesUpdated == 0 || categoriesUpdated == 1);
 	}
 
 	/**
