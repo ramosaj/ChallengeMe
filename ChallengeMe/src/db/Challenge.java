@@ -311,7 +311,7 @@ public class Challenge
 		return challenge;
 	}
 	
-	private static List<User> getCompletedUsers (Long challengeId)
+	public static List<User> getCompletedUsers (Long challengeId)
 	throws SQLException
 	{
 		PreparedStatement ps = connection.prepareStatement("SELECT * FROM ? WHERE challengeId=?");
@@ -336,7 +336,7 @@ public class Challenge
 		return completedUsers;
 	}
 	
-	private static List<User> getInterestedUsers (Long challengeId)
+	public static List<User> getInterestedUsers (Long challengeId)
 	throws SQLException
 	{
 		PreparedStatement ps = connection.prepareStatement("SELECT * FROM ? WHERE challengeId=?");
@@ -359,4 +359,5 @@ public class Challenge
 		}
 		return interestedUsers;
 	}
+
 }

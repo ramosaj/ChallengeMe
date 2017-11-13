@@ -4,7 +4,7 @@ import java.sql.SQLException;
 
 import org.junit.jupiter.api.Test;
 
-import db.Database;
+import db.*;
 import junit.framework.TestCase;
 
 class DatabaseTest extends TestCase {
@@ -17,7 +17,8 @@ class DatabaseTest extends TestCase {
 	}
 
 	@Test
-	void testChallenge() {
-		
+	void testAddUser() {
+//		User user = new User()
+//		Challenge challenge = new Challenge();
 	}
 }

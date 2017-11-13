@@ -34,6 +34,8 @@ public class User
 	private String password;
 	private String name;
 	private String bio;
+	private String avatarURL;
+	
 	
 	private List<Challenge> challenges;
 	private List<Challenge> completedChallenges;
@@ -44,22 +46,24 @@ public class User
 		private static final long serialVersionUID = -7465057662586463032L;
 	}
 
-	public User (Long id, String username, String password, String name, String bio)
+	public User (Long id, String username, String password, String name, String bio, String avatarURL)
 	{
 		this.id = id;
 		this.username = username;
 		this.password = password;
 		this.name = name;
 		this.bio = bio;
+		this.avatarURL = avatarURL;
 	}
 	
-	public User (Long id, String username, String password, String name, String bio, List<Challenge> challenges, List<Challenge> completedChallenges,  List<Challenge> interestedChallenges)  
+	public User (Long id, String username, String password, String name, String bio, String avatarURL, List<Challenge> challenges, List<Challenge> completedChallenges,  List<Challenge> interestedChallenges)  
 	{
 		this.id = id;
 		this.username = username;
 		this.password = password;
 		this.name = name;
 		this.bio = bio;
+		this.avatarURL = avatarURL;
 		this.challenges = challenges;
 		this.completedChallenges = completedChallenges;
 		this.interestedChallenges = interestedChallenges;
@@ -110,6 +114,16 @@ public class User
 		this.bio = bio;
 	}
 	
+	public void setAvatarURL(String avatarURL) 
+	{
+		this.avatarURL = avatarURL;
+	}
+	
+	public String getAvatarURL() 
+	{
+		return avatarURL;
+	}
+	
 	public Date getCreateAtDate() 
 	{
 		return createAt;
@@ -152,12 +166,12 @@ public class User
 	{
 		if (id == null) {
 			// adding a challenge
-			long userId = User.add(username, password, name, bio);
+			long userId = User.add(username, password, name, bio, avatarURL);
 			// update the id
 			id = userId;
 		}
 		else {
-			User.update(id, username, name, bio);
+			User.update(id, username, name, bio, avatarURL);
 		}
 		createAt = new Date();
 		assert(id != null);
@@ -224,15 +238,16 @@ public class User
 	 * @return
 	 * @throws SQLException
 	 */
-	public static long add (String username, String password, String name, String bio)
+	public static long add (String username, String password, String name, String bio, String avatarURL)
 	throws SQLException
 	{
-		PreparedStatement ps = connection.prepareStatement("INSERT INTO ? (username, password, name, bio) VALUES (?, ?, ?, ?)", Statement.RETURN_GENERATED_KEYS);
+		PreparedStatement ps = connection.prepareStatement("INSERT INTO ? (username, password, name, bio, avatarURL) VALUES (?, ?, ?, ?, ?)", Statement.RETURN_GENERATED_KEYS);
 		ps.setString(1, TBL_NAME);
 		ps.setString(2, username);
 		ps.setString(3, password);
 		ps.setString(4, name);
 		ps.setString(5, bio);
+		ps.setString(6, avatarURL);
 				
 		int userCreated = ps.executeUpdate();
 		assert (userCreated == 0 || userCreated == 1);
@@ -245,15 +260,16 @@ public class User
 		return userId;
 	}
 	
-	public static void update (Long userId, String username, String name, String bio)
+	public static void update (Long userId, String username, String name, String bio, String avatarURL)
 	throws SQLException
 	{
-		PreparedStatement ps = connection.prepareStatement("UPDATE ? SET username=?, name=?, bio=? WHERE id=?");
+		PreparedStatement ps = connection.prepareStatement("UPDATE ? SET username=?, name=?, bio=?, avatarURL=?, WHERE userId=?");
 		ps.setString(1, TBL_NAME);
 		ps.setString(2, username);
 		ps.setString(3, name);
 		ps.setString(4, bio);
-		
+		ps.setString(5, avatarURL);
+		ps.setLong(6, userId);
 		int usersUpdated = ps.executeUpdate();
 		assert (usersUpdated == 0 || usersUpdated == 1);
 	}
@@ -266,17 +282,17 @@ public class User
 		String password = rs.getString("password");
 		String name = rs.getString("name");
 		String bio = rs.getString("bio");
-		
+		String avatarURL = rs.getString("avatarURL");
 		User user = null;
 		
 		if (lazyLoad) {
-			user = new User(id, username, password, name, bio);
+			user = new User(id, username, password, name, bio, avatarURL);
 		}
 		else {
 	  		List<Challenge> challenges = getChallenges(id);
 	 		List<Challenge> completedChallenges = getCompletedChallenges(id);
 	 		List<Challenge> interestedChallenges = getInterestedChallenges(id);
-	 		user = new User(id, username, password, name, bio, challenges, completedChallenges, interestedChallenges);
+	 		user = new User(id, username, password, name, bio, avatarURL, challenges, completedChallenges, interestedChallenges);
 		}
 		
 		return user;
