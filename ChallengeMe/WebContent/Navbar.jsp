@@ -3,21 +3,6 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
 <html>
 <head>
-
-
-<script>
-	function showUsersInterested()
-	{
-		document.getElementById("usersInterested").hidden=false;
-		document.getElementById("usersCompleted").hidden=true;
-	}
-	
-	function showUsersCompleted()
-	{
-		document.getElementById("usersInterested").hidden=true;
-		document.getElementById("usersCompleted").hidden=false;		
-	}
-</script>
 <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-beta.2/css/bootstrap.min.css" 
 	integrity="sha384-PsH8R72JQ3SOdhVi3uxftmaW6Vc51MKb0q5P2rRUpPvrszuE4W1povHYgTpBfshb" crossorigin="anonymous">
 	<script src="https://code.jquery.com/jquery-3.2.1.slim.min.js" 
@@ -34,19 +19,57 @@
 
 			
 </style>
+<script>
+	function get-num-users(){
+		var ws = new WebSocket("ws://serverSocket blah blah");
+		ws.onopen = function() {
+			document.getElementById("num-users")
+			
+			
+		
+			
+		}
+		
+		ws.onmessage = function() {
+		
+		
+			
+		}
+		
+		
+		ws.onclose = function () {
+		
+			
+		}
+		
+		
+		
+	}
+	
+
+
+
+
+</script>
 <title>Insert title here</title>
 </head> 
-<body>
+<body onload="">
 	<nav class="navbar navbar-expand-lg navbar-dark bg-dark">
 	<ul class="navbar-nav">
       <li class="nav-item active">
         <a class="nav-link" href="">Home <span class="sr-only">(current)</span></a>
       </li>
       <li class="nav-item">
-        <a class="nav-link" href="profile.jsp">User Profile</a>
+        <a class="nav-link" href="Profile.jsp">User Profile</a>
       </li>
       <li class="nav-item">
-        <a class="nav-link" href="search.jsp">Challenge Search</a>
+        <a class="nav-link" href="Search.jsp">Challenge Search</a>
+      </li>
+      <li class="nav-item">
+      	No. viewing challenges: 
+      	<div id="num-users">
+      
+      	</div>
       </li>
       </ul>
   
