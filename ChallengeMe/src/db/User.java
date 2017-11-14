@@ -458,5 +458,26 @@ public class User
 		assert (markedIncomplete == 0 || markedIncomplete == 1);
 		return (markedIncomplete == 1);
 	}
+	public static boolean validation(String username, String password)
+	throws SQLException
+	{
+		PreparedStatement ps = connection.prepareStatement("SELECT * FROM ? WHERE username=? AND password=?");
+		ps.setString(1, CompletedChallenge.TBL_NAME);
+		ps.setString(2, username);
+		ps.setString(3, password);
+		
+		ResultSet rs = ps.executeQuery();
+		return rs.next();
+	}
+	public static boolean validateUsernam(String username)
+	throws SQLException
+	{
+		PreparedStatement ps = connection.prepareStatement("SELECT * FROM ? WHERE username=? ");
+		ps.setString(1, CompletedChallenge.TBL_NAME);
+		ps.setString(2, username);
+		
+		ResultSet rs = ps.executeQuery();
+		return rs.next();
+	}
 	
 }

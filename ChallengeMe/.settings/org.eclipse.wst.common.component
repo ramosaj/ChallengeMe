@@ -2,6 +2,9 @@
     <wb-module deploy-name="ChallengeMe">
         <wb-resource deploy-path="/" source-path="/WebContent" tag="defaultRootSource"/>
         <wb-resource deploy-path="/WEB-INF/classes" source-path="/src"/>
+        <dependent-module archiveName="gson-2.8.0.jar" deploy-path="/WEB-INF/lib" handle="module:/classpath/lib//Users/Owen/Desktop/CSCI201_workspace/Assignment1/gson-2.8.0.jar">
+            <dependency-type>uses</dependency-type>
+        </dependent-module>
         <property name="context-root" value="ChallengeMe"/>
         <property name="java-output-path" value="/ChallengeMe/build/classes"/>
     </wb-module>
