@@ -53,7 +53,7 @@
 <body onload="getProfile()">
 	<div class="row">
 		<div class="col-md-12 well"> 
-			<h1 id="fullName">Tommy Trojan</h1>
+			<h1 id="fullName">Trojan</h1>
 			<p id="username">@tj</p>
 			<p id="joined"> Sometime idk fam</p>
 		</div>
