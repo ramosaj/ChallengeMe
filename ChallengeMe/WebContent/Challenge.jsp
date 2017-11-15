@@ -1,6 +1,5 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8"
     pageEncoding="UTF-8"%>
-<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
 <%@include file="Navbar.jsp"%>
 <!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
 <html>
@@ -10,12 +9,15 @@
 <script>
 	function loadUsers() {
 		var user = new XMLHttpRequest();
-		user.open("GET",'/user/'+<%=request.getSession().getAttribute("userId")%>,false);
-		var userRespone = JSON.parse(user.responseText);
-		document.getElementById("fullName").innerHTML = userResponse.name;
-		document.getElementById("username").innerHTML = userResponse.username;
-		document.getElementById("joined").innerHTML = userResponse.createdAt;
-		document.getElementById("bio").innerHTML = userResponse.bio;
+		user.open("GET",'/challenges/'+<%=request.getSession().getAttribute("userId")%>+'/interested',false);
+		var userResponse = JSON.parse(user.responseText);
+		String html ="";
+		for(var i =0; i< userResponse.size();i++)
+			{
+				String name = userResponse.get(i).getName();
+				html+="<tr><th>" + name + "</th></tr>";
+			}
+		document.getElementById("usersInterested").innerHTML = name;
 		
 		var userChallenges = new XHMLHttpRequest();
 		userChallenges.open("GET",userResponse.challengesUrl,false);
