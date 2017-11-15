@@ -42,7 +42,7 @@ public class ChallengesServlet extends HttpServlet
 			String[] splits = path.split("/");
 			
 			if (splits.length >= 2) {
-				username = splits[1];
+				challengeId = splits[1];
 			}
 			if (splits.length >= 3) {
 				challengeId = Long.parseLong(splits[2]);
@@ -60,7 +60,7 @@ public class ChallengesServlet extends HttpServlet
 		String pathInfo = request.getPathInfo();
 		PathExtractor extractor = new PathExtractor(pathInfo);
 		
-		if (extractor.username == null || extractor.challengeId == null) {
+		if (extractor.challengeId == null) {
 			response.sendError(HttpServletResponse.SC_BAD_REQUEST);
 			return;
 		}
@@ -71,8 +71,64 @@ public class ChallengesServlet extends HttpServlet
 		}
 		// TODO: other url mappings
 		else {
-			response.sendError(HttpServletResponse.SC_BAD_REQUEST);
+			if(extractor.toBeQueried.equals("interested"))
+			{
+				listInterestedChallenges(extractor.challengeId, request, response);
+			}
+			if(extractor.toBeQueried.equals("completed"))
+			{
+				listCompletedChallenges(extractor.challengeId, request, response);
+			}
 		}
+	}
+	
+	protected void listInterestedChallenges (long challenge, HttpServletRequest request, HttpServletResponse response)
+	throws ServletException, IOException
+	{
+		JsonArray usersJSON = new JsonArray();
+		
+		try {
+			// get user challenges
+			List<Challenge> interestedUsers = Challenge.get(challenge).getInterestedUsers();
+			for (User user : interestedUsers) {
+				JsonElement userJSON = Serializer.getUserJSON(user, true);
+				usersJSON.add(userJSON);
+			}
+		}
+		catch (SQLException sqle) {
+			sqle.printStackTrace();
+		}
+		
+		JsonElement payload = usersJSON;
+		PrintWriter out = response.getWriter();
+		response.setContentType("application/json");
+		response.setStatus(HttpServletResponse.SC_OK);
+		out.print(payload.toString());
+		out.flush();
+	}
+	protected void listCompletedChallenges (long challenge, HttpServletRequest request, HttpServletResponse response)
+	throws ServletException, IOException
+	{
+		JsonArray usersJSON = new JsonArray();
+		
+		try {
+			// get user challenges
+			List<Challenge> interestedUsers = Challenge.get(challenge).getCompletedUsers();
+			for (User user : interestedUsers) {
+				JsonElement userJSON = Serializer.getUserJSON(user, true);
+				usersJSON.add(userJSON);
+			}
+		}
+		catch (SQLException sqle) {
+			sqle.printStackTrace();
+		}
+		
+		JsonElement payload = usersJSON;
+		PrintWriter out = response.getWriter();
+		response.setContentType("application/json");
+		response.setStatus(HttpServletResponse.SC_OK);
+		out.print(payload.toString());
+		out.flush();
 	}
 	
 	/**
