@@ -1,3 +1,4 @@
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -29,7 +30,7 @@
         		{
         			return false;
         		}
-        		var requeststr = "SignupServlet?";
+        		var requeststr = "LoginServlet?";
         		requeststr += "username=" + username;
         		requeststr += "&password=" + password;
         		
@@ -90,6 +91,7 @@
 
 
 
+        
     </script>
 
 

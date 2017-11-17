@@ -28,6 +28,7 @@ public class LoginServlet extends HttpServlet {
 		// Why are we using the GET protocol for logging in...
 		String username = request.getParameter("username");
 		String password = request.getParameter("password");
+		System.out.println("logging in " + username);
 		
 		Boolean userExists = null;
 		try {
@@ -56,6 +57,7 @@ public class LoginServlet extends HttpServlet {
 			}
 			request.getSession().setAttribute("userID", currUser.getId());
 			request.getSession().setAttribute("username", currUser.getUsername());
+			System.out.println(request.getSession().getAttribute("username"));
 		}
 	}
 }

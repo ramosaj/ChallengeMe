@@ -1,3 +1,4 @@
+
 <%@ page language="java" contentType="text/html; charset=UTF-8"
     pageEncoding="UTF-8"%>
     
@@ -6,6 +7,10 @@
 <html lang="en">
 <head>
   <title>Bootstrap Example</title>
+  <%
+  	System.out.println(request.getSession().getAttribute("username"));
+  
+  %>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
@@ -32,21 +37,20 @@
   	window.onload = getChallenges;
   	
   	function addPost() {
-  		var title = getElementById("title").value;
-  		var description = getElementById("description").value;
+  		var title = document.getElementById("title").value;
+  		var description = document.getElementById("description").value;
   		var challenge = new XMLHttpRequest();
   		var url = "user/" +<%=request.getSession().getAttribute("username")%>+"/challenges";
-  		xhttp.open("POST", url, true);
-  		xhttp.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
+  		challenge.open("POST", url, true);
+  		challenge.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
   		var descript = encodeURI(description);
-  		challenge.open('POST',"title="+title+"&description=descript",true);
   		challenge.onreadystatechange = function() {
   			if(this.readyState == 4 && this.status == 200){
   				getChallenges();
   				
   			}
   		}
-  		challenge.send();
+  		challenge.send("title="+title+"&description="+descript);
   		
   		
   		
@@ -73,6 +77,7 @@
             Description:
             <textarea class="form-control" id="description" placeholder="Description"></textarea>
             <br />
+            <textarea class="form-control" id="categories" placeholder="Enter categories"></textarea>
             <input type="submit" class="form-control">
           </form>
         </div> 
