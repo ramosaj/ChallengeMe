@@ -53,7 +53,7 @@ function createChallengeDiv (challenge)
 	var usernameParagraphBolded = document.createElement("b");
 	usernameParagraphBolded.appendChild(usernameParagraph);
 	usernameParagraphBolded.onclick = function () {
-		window.location.href = "/ChallengeMe/Profile.jsp?username=" + challenge.owner.username;
+		window.location.href = "Profile.jsp?username=" + challenge.owner.username;
 	}
 	// date
 	var dateParagraph = document.createElement("p");
