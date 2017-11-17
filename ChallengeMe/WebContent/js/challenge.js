@@ -146,6 +146,10 @@ function presentInterest (username, owner, challengeId)
             	var user = getUser(username);
             	var userDiv = createUserDiv(user, "interested-user");
     			document.getElementById("interested-users").appendChild(userDiv);
+            	// Increment count
+        		var interestedUsersCountEl = document.getElementById("interested-users-count");
+        		interestedUsersCountEl.dataset.value = parseInt(interestedUsersCountEl.dataset.value) + 1;
+        		interestedUsersCountEl.innerHTML = interestedUsersCountEl.dataset.value;
             }
             else {
                 console.error(checkInterestRequest.statusText);
@@ -176,6 +180,10 @@ function deleteInterest (username, owner, challengeId)
             			break;
             		}
             	}
+            	// Decrement count
+        		var interestedUsersCountEl = document.getElementById("interested-users-count");
+        		interestedUsersCountEl.dataset.value = parseInt(interestedUsersCountEl.dataset.value) - 1;
+        		interestedUsersCountEl.innerHTML = interestedUsersCountEl.dataset.value;
             }
             else {
                 console.error(deleteInterestRequest.statusText);
@@ -205,7 +213,10 @@ function loadInterestedUsers (username, challengeId)
             if (getInterestedUsersRequest.status === 200) {
         		var interestedUsers = JSON.parse(getInterestedUsersRequest.responseText);
     			
-        		document.getElementById("interested-users-count").innerHTML = interestedUsers.length;
+        		var interestedUsersCountEl = document.getElementById("interested-users-count");
+        		interestedUsersCountEl.innerHTML = interestedUsers.length;
+        		interestedUsersCountEl.dataset.value = parseInt(interestedUsers.length);
+
         		for (var user of interestedUsers) {
         			var userDiv = createUserDiv(user, "interested-user");
         			document.getElementById("interested-users").appendChild(userDiv);
@@ -267,7 +278,10 @@ function loadCompletedUsers (username, challengeId)
             if (getCompletedUsersRequest.status === 200) {
         		var completedUsers = JSON.parse(getCompletedUsersRequest.responseText);
     			
-        		document.getElementById("completed-users-count").innerHTML = completedUsers.length;
+        		var completedUsersCountEl = document.getElementById("completed-users-count");
+        		completedUsersCountEl.innerHTML = completedUsers.length;
+        		completedUsersCountEl.dataset.value = parseInt(completedUsers.length);
+        		
         		for (var user of completedUsers) {
         			var userDiv = createUserDiv(user, "completed-user");
         			document.getElementById("completed-users").appendChild(userDiv);
