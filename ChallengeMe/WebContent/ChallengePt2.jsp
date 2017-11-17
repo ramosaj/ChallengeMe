@@ -42,7 +42,7 @@
   		var html = "";
   		for(var i=0;i<response.length;i++){
   			html=html+"<div class=\"row\"> <div class=\"col-sm-12 well\">\n";
-  			html = html+ "<a href="+ response[i].challengeLink + ">" + response[i].name + " </a>\n";
+  			html = html+ "<a href='#' onclick=redirect("+response[i].challengeLink+")>" + response[i].name + " </a>\n";
   			html = html + "<p> "+response[i].owner.username+" <br /> at "+ response[i].createdAt +"</p>\n";
   			html=html+"<p>"+response[i].description+"</p>\n <br />";
   			html = html+"<button type='button' class='btn btn-primary'> Interested </button>";
@@ -60,7 +60,31 @@
   		var title = getElementById("title").value;
   		var description = getElementById("description").value;
   		var challenge = new XMLHttpRequest();
-  		challenge.open('POST',);
+  		var url = "user/" +<%=request.getSession().getAttribute("username")%>+"/challenges";
+  		xhttp.open("POST", url, true);
+  		xhttp.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
+  		var descript = encodeURI(description);
+  		challenge.open('POST',"title="+title+"&description=descript",true);
+  		challenge.onreadystatechange = function() {
+  			if(this.readyState == 4 && this.status == 200){
+  				getChallenges();
+  				
+  			}
+  		}
+  		challenge.send();
+  		
+  		
+  		
+  		
+  		
+  	}
+  	
+  	function redirect(url) {
+  		var urlpattern = url.split("/");
+  		var username = urlpattern[1];
+  		var challengeId = urlpattern[2];
+  		window.location.href="Challenge.jsp?username="+username+"&challengeId="+challengeId;	
+  		
   		
   		
   		

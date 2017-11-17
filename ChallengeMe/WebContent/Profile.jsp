@@ -10,6 +10,7 @@
 	<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
 	<script src="./js/profile.js" type="text/javascript"></script>
 	<style>
+	
 	.navbar {
 		margin-bottom: 0;
 		border-radius: 0%;
