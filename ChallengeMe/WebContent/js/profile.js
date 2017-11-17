@@ -1,3 +1,28 @@
+var MONTHS = [
+	"January",
+	"February",
+	"March",
+	"April",
+	"May",
+	"June",
+	"July",
+	"August",
+	"September",
+	"October",
+	"November",
+	"December"
+]
+
+function getDateString (ds)
+{
+	var dateComponents = ds.split('-');
+	var day = dateComponents[2];
+	var month = MONTHS[parseInt(dateComponents[1])];
+	var year = dateComponents[0];
+	
+	return month + " " + day + ", " + year;
+}
+
 function getProfileUrl (username)
 {
 	return "/ChallengeMe/users/" + username;
@@ -37,9 +62,9 @@ function getProfileByUrl (url)
             		responseText = responseText.replace(/\u201C/g, '"').replace(/\u201D/g, '"');
             		var user = JSON.parse(getUserRequest.responseText);
         			
-                document.getElementById("full-name-value").innerHTML = user.name;
+            		document.getElementById("full-name-value").innerHTML = user.name;
 	        		document.getElementById("username-value").innerHTML = user.username;
-	        		document.getElementById("joined-value").innerHTML = user.createdAt;
+	        		document.getElementById("joined-value").innerHTML = getDateString(user.createdAt);
 	        		document.getElementById("bio-value").innerHTML = user.bio;
 	        		
 	        		getChallengesByUrl(user.challengesUrl);

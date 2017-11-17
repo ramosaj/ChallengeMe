@@ -59,11 +59,6 @@ public class Serializer
 	public static JsonElement getUserJSON (User user)
 	throws SQLException
 	{
-		Long createdAt = null;
-		if (user.getCreateAtDate() != null) {
-			createdAt = user.getCreateAtDate().getTime();
-		}
-		
 		JsonObject userJSON = new JsonObject();
 		userJSON.addProperty("id", user.getId());
 		userJSON.addProperty("username", user.getUsername());
@@ -77,7 +72,7 @@ public class Serializer
 		userJSON.addProperty("interestedUrl", String.format("/ChallengeMe/users/%s/interested", user.getUsername()));
 		userJSON.addProperty("completedCount", user.getCompletedChallenges().size());
 		userJSON.addProperty("completedUrl", String.format("/ChallengeMe/users/%s/completed", user.getUsername()));
-		userJSON.addProperty("createdAt", createdAt);
+		userJSON.addProperty("createdAt", user.getCreateAtDate().toString());
 		
 		return userJSON;
 	}
