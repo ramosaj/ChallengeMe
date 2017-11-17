@@ -20,9 +20,15 @@
 		padding-left: 40px;
 	}
 	</style>
-	<script type="text/javascript">
-		var username = "<%= session.getAttribute("username") %>";
-		username = "presIdent";
+	<script type="text/javascript">		
+		var url = new URL(window.location.href);
+		var username = url.searchParams.get("username");
+		
+		if (username == null) {
+			// by default it is the own's user
+			username = "<%= session.getAttribute("username") %>";
+			username = "presIdent";
+		}
 		
 		window.onload = function () {
 			getProfile(username);

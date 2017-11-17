@@ -104,6 +104,7 @@ function getChallengesByUrl (url)
             			challengeLink.href = challenge.url;
             			challengeLink.innerHTML = challenge.name;
             			document.getElementById("posted-challenges").appendChild(challengeLink);
+            			document.getElementById("posted-challenges").appendChild(document.createElement("br"));
             		}
             } else {
                 console.error(getChallengesRequest.statusText);
@@ -139,6 +140,7 @@ function getInterestedChallengesByUrl (url)
             			challengeLink.href = challenge.url;
             			challengeLink.innerHTML = challenge.name;
             			document.getElementById("interested-challenges").appendChild(challengeLink);
+            			document.getElementById("interested-challenges").appendChild(document.createElement("br"));
             		}
             } else {
                 console.error(getInterestedChallengesRequest.statusText);
@@ -174,6 +176,7 @@ function getCompletedChallengesByUrl (url)
             			challengeLink.href = challenge.url;
             			challengeLink.innerHTML = challenge.name;
             			document.getElementById("completed-challenges").appendChild(challengeLink);
+            			document.getElementById("completed-challenges").appendChild(document.createElement("br"));
             		}
             } else {
                 console.error(getCompletedChallengesRequest.statusText);
