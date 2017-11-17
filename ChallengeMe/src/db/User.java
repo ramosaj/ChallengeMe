@@ -330,6 +330,7 @@ public class User
 		while (rs.next()) {
 			challenges.add(Challenge.getFromResultSet(rs, Challenge.LAZY_LOAD));
 		}
+		
 		return challenges;
 	}
 	
