@@ -21,32 +21,48 @@
   </style>
   
   <script>
+  	
+  	window.onload = function() {
+  		getChallenges();
+  		
+  		
+  	}
   	function getChallenges() {
   		var challenges = new XMLHttpRequest();
-  		var interested = new XMLHttpRequest();
-  		var completed = new XMLHttpRequest();
+  		//var interested = new XMLHttpRequest();
+  		//var completed = new XMLHttpRequest();
   		
-  		var userId = <%request.getSession().getAttribute("userId");%>
-  		xhttp.open('GET','/challenges',false);
-  		var response = JSON.parse(xhttp.responseText);
-  	
-  		var html = "<div class=\"row\"> <div class=\"col-sm-12 well\">\n"";
+
+  		challenges.open('GET','/ChallengeMe/challenges',false);
+  		alert(challenges.responseText);
+  		var response = JSON.parse(challenges.responseText);
+  		
+  		alert(response.length)
+  		var html = "<div class=\"row\"> <div class=\"col-sm-12 well\">\n";
   		for(var i=0;i<response.length;i++){
-  			html = html+ "<p> "+ response[i].title + " </p>\n";
+  			html = html+ "<a href="+ response[i].challengeLink + ">" + response[i].title + " </a>\n";
   			html = html + "<p> Created by: "+response[i].creator +" at "+ response[i].createdAt +"</p>\n";
   			html=html+"<p>"+response[i].description+"</p>\n";
-  			interested.open('GET',reponse[i].interestedUrl,false);
-  			html=html+"<div class=\"col-md-6\">
-  			
-  			
-  			
-  			
-  			
+  			html=html+"<div class=\"col-md-6\">";
+  			html=html+"<a href=" + response[i].challengeLink+"> Interested Users </a>";
+  			html=html+"</div>";
+  			html=html+"<div class=\"col-md-6\">";
+  			html=html+"<a href="+response[i].challengeLink+"> Users that completed the Challenge </a>";
+  			html=html+"</div>";
+
   		}
-  		html+="</div></div>"
+  		html+="</div></div>";
+  		document.getElementById("feed").innerHTML = html;
   		
-  		
-  		
+  	}
+  	
+  	
+  	
+  	function addPost() {
+  		var title = getElementById("title").value;
+  		var description = getElementById("description").value;
+  		var challenge = new XMLHttpRequest();
+  		challenge.open('POST',);
   		
   		
   		
@@ -70,9 +86,9 @@
     <div class="row">
     		<div class="col-sm-12 well">
     			Upload a challenge. 
-    			<form method=POST action="addPost()" onsubmit="updatePost()">
-    				Title:<input type="text" class="form-control" placeholder="Enter Title">
-    				Description: <textarea class="form-control" placeholder="Description">
+    			<form method=POST onsubmit="return addPost();">
+    				Title:<input type="text" class="form-control" id="title" placeholder="Enter Title">
+    				Description: <textarea class="form-control" id="description" placeholder="Description">
     				
     				</textarea>
     				<br />
@@ -84,7 +100,7 @@
     		
     		</div> 
     </div>
-    
+    <div id="feed">
       
       <div class="row">
         <div class="col-sm-12 well">
@@ -103,6 +119,7 @@
           </div>
         </div>
       </div>
+     </div>
    
      
     </div>
