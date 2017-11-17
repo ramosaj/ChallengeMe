@@ -142,9 +142,8 @@ function presentInterest (username, owner, challengeId)
 		if (presentInterestRequest.readyState === 4) {
             if (presentInterestRequest.status === 204) {
             	markInterestedButton();
-            	// TODO: add user to the interested users column
+            	// Add user to the interested users column
             	var user = getUser(username);
-            	console.log(user);
             	var userDiv = createUserDiv(user, "interested-user");
     			document.getElementById("interested-users").appendChild(userDiv);
             }
@@ -170,7 +169,7 @@ function deleteInterest (username, owner, challengeId)
 		if (deleteInterestRequest.readyState === 4) {
             if (deleteInterestRequest.status === 204) {
             	markUninterestedButton();
-            	// TODO: remove user from the challenge's interested column
+            	// Remove user from the interested users column
             	for (var div of document.getElementsByClassName("interested-user")) {
             		if (div.dataset.username == username) {
             			div.parentElement.removeChild(div);

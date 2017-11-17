@@ -18,7 +18,8 @@
 }
 </style>
 <script>
-	var currentUsername = "tony";
+	// FIXME: get from the current session
+	var currentUsername = "anthony";
 	
 	var url = new URL(window.location.href);
 	var username = url.searchParams.get("username");
@@ -26,7 +27,7 @@
 	
 	window.onload = function() {
 		loadInterest(currentUsername, username, challengeId);
-		// loadChallenge(username, challengeId);
+		loadChallenge(username, challengeId);
 		loadInterestedUsers(username, challengeId);
 		loadCompletedUsers(username, challengeId);
 	}
