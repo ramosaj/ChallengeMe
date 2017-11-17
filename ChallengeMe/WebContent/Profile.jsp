@@ -5,126 +5,62 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
 <html>
 <head>
-<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
-<title>Insert title here</title>
-<style>
-	div.well {
-		border-bottom:2px solid black;
-		margin: 10px 10px 10px 10px;
-		
-	}
-	#fullName, #username, #joined{
-		padding: 0px 0px 0px 0px;
-		margin: 0px 0px 0px 0px;
-	}
-	#joined {
-		margin-bottom: 20px;
-	
+	<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+	<title>Insert title here</title>
+	<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+	<script src="./js/profile.js" type="text/javascript"></script>
+	<style>
+	.navbar {
+		margin-bottom: 0;
+		border-radius: 0%;
 	}
 	
-</style>
-<script>
-	function getProfile() {
-		var user = new XMLHttpRequest();
-		user.open("GET",'/user/'+<%=request.getSession().getAttribute("userId")%>,false);
-		var userRespone = JSON.parse(user.responseText);
-		document.getElementById("fullName").innerHTML = userResponse.name;
-		document.getElementById("username").innerHTML = userResponse.username;
-		document.getElementById("joined").innerHTML = userResponse.createdAt;
-		document.getElementById("bio").innerHTML = userResponse.bio;
+	#user-info {
+		padding-left: 40px;
+	}
+	</style>
+	<script type="text/javascript">
+		var username = "<%= session.getAttribute("username") %>";
 		
-		var userChallenges = new XHMLHttpRequest();
-		userChallenges.open("GET",userResponse.challengesUrl,false);
-		var challengeList = JSON.parse(userChallenges.responseText);
-		var challengeHTML = ""
-		for(var element in challengeList){
-			challengeHTML=challengeHTML +  "<a href="+element.url+">"+element.name+"</a><br />";
-			
+		window.onload = function () {
+			setTimeout(function () { getProfile(username); }, 1000);
 		}
-		document.getElementById("posted").innerHTML = challengeHTML;
-		
-		
-		
-		
-		
-}
-</script>
+	</script>
 </head>
-<body onload="getProfile()">
+<body>
 	<div class="row">
-		<div class="col-md-12 well"> 
-			<h1 id="fullName">Trojan</h1>
-			<p id="username">@tj</p>
-			<p id="joined"> Sometime idk fam</p>
+		<div id="user-info" class="col-md-12 well"> 
+			<div id="full-name">
+				<h1 id="full-name-value"></h1>
+			</div>
+			<div id="username">
+				@<span id="username-value"></span>
+			</p>
+			</div>
+			<div id="joined">
+				Joined <span id="joined-value"></span>
+			</div>
+			
+			<br />
+			<div id="bio">
+				<h4>Bio</h4>
+				<p id="bio-value"></p>
+			</div>
 		</div>
 	</div>
-	<div class="row">
-		<div class="col-md-8 well">
-		<h4> BIO </h4><hr />
-		<div id="bio">Hi my name is Tommy <br />
-		and my favorite past time is FIGHTING ON!
-		 </div>
-		
-		
-		
-		</div>
-		<div class="col-md-2 bridge"></div>
-	</div>
-	<div class="row">
-		<div class="col-md-2"></div>
-		<div class="col-md-8 well">
-		<h4>Posted Challenges </h4>
-		<div id="posted">
-			Challenge 8
-			Challenge 9
-		
-		 </div>
 	
-		
-		
+	<div class="container">
+		<div class="row">
+			<div class="col" id="posted-challenges">
+				<h4>Posted Challenges</h4>
+			</div>
+			<div class="col" id="completed-challenges">
+				<h4>Completed Challenges</h4>
+			</div>
+			<div class="col" id="interested-challenges">
+				<h4>Interested Challenges</h4>
+			</div>
 		</div>
-		<div class="col-md-2"></div>
 	</div>
-	<div class="row">
-		
-		<div class="col-md-2"></div>
-		<div class="col-md-8 well" >
-		<h4>Completed Challenges</h4>
-		<div id="completed ">
-			Challenge 1
-			challenge 2
-			challenge 3
-			challenge 4
-			challenge 5
-		</div>
-		
-		
-		
-		
-		</div>
-		<div class="col-md-2"></div>
-	</div>
-	<div class="row">
-		<div class="col-md-2"></div>
-		<div class="col-md-8 well">
-		<h4>Interested Challenges</h4>
-		<div id="interested">
-			Challenge 1
-			challenge 2
-			challenge 3
-			challenge 4
-			challenge 5
-		
-		
-		</div>
-		
-		
-		
-		
-		</div>
-		<div class="col-md-2"></div>
-	</div>
-
-
 </body>
 </html>
