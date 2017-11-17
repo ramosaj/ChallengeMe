@@ -28,11 +28,11 @@ public class Serializer
 		challengeJSON.addProperty("id", challenge.getId());
 		challengeJSON.addProperty("name", challenge.getTitle());
 		challengeJSON.addProperty("description", challenge.getDescription());
-		challengeJSON.addProperty("url", String.format("/ChallengeMe/challenges/%s/%s", challenge.getUser().getName(), challenge.getId()));
+		challengeJSON.addProperty("url", String.format("/ChallengeMe/challenges/%s/%s", challenge.getUser().getUsername(), challenge.getId()));
 		challengeJSON.addProperty("interestedCount", challenge.getInterestedUsers().size());
-		challengeJSON.addProperty("interestedUrl", String.format("/ChallengeMe/challenges/%s/%s/interested", challenge.getUser().getName(), challenge.getId()));
+		challengeJSON.addProperty("interestedUrl", String.format("/ChallengeMe/challenges/%s/%s/interested", challenge.getUser().getUsername(), challenge.getId()));
 		challengeJSON.addProperty("completedCount", challenge.getCompletedUsers().size());
-		challengeJSON.addProperty("completedUrl", String.format("/ChallengeMe/challenges/%s/%s/completed", challenge.getUser().getName(), challenge.getId()));
+		challengeJSON.addProperty("completedUrl", String.format("/ChallengeMe/challenges/%s/%s/completed", challenge.getUser().getUsername(), challenge.getId()));
 		challengeJSON.addProperty("createdAt", challenge.getCreateAtDate().toString());
 
 		JsonArray categoriesJSON = new JsonArray();
