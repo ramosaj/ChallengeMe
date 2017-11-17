@@ -4,6 +4,7 @@ import java.io.IOException;
 import java.io.PrintWriter;
 import java.sql.Connection;
 import java.sql.SQLException;
+import java.util.List;
 
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
@@ -11,6 +12,7 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 
 import db.Challenge;
@@ -89,9 +91,9 @@ public class ChallengesServlet extends HttpServlet
 		
 		try {
 			// get user challenges
-			List<Challenge> interestedUsers = Challenge.get(challenge).getInterestedUsers();
+			List<User> interestedUsers = Challenge.get(challenge).getInterestedUsers();
 			for (User user : interestedUsers) {
-				JsonElement userJSON = Serializer.getUserJSON(user, true);
+				JsonElement userJSON = Serializer.getUserJSON(user);
 				usersJSON.add(userJSON);
 			}
 		}
@@ -113,9 +115,9 @@ public class ChallengesServlet extends HttpServlet
 		
 		try {
 			// get user challenges
-			List<Challenge> interestedUsers = Challenge.get(challenge).getCompletedUsers();
+			List<User> interestedUsers = Challenge.get(challenge).getCompletedUsers();
 			for (User user : interestedUsers) {
-				JsonElement userJSON = Serializer.getUserJSON(user, true);
+				JsonElement userJSON = Serializer.getUserJSON(user);
 				usersJSON.add(userJSON);
 			}
 		}
