@@ -18,40 +18,41 @@ import db.User;
 public class SignupServlet extends HttpServlet {
 	private static final long serialVersionUID = 1L;
        
-
 	/**
 	 * @see HttpServlet#doGet(HttpServletRequest request, HttpServletResponse response)
 	 */
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) 
-			throws ServletException, IOException {
-		// TODO Auto-generated method stub
+	throws ServletException, IOException
+	{
 		String fname = request.getParameter("fname");
 		String lname = request.getParameter("lname");
 		String username = request.getParameter("username");
 		String email = request.getParameter("email");
 		String password = request.getParameter("password");
-		boolean exist = false;
+		
+		Boolean userExists = null;
 		try {
-			exist = User.validateUsername(username);
-		} catch (SQLException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+			userExists = User.validateUsername(username);
 		}
-		if (exist) {
+		catch (SQLException sqle) {
+			sqle.printStackTrace();
+		}
+		finally {
+			userExists = false;
+		}
+		
+		if (userExists) {
 			request.setAttribute("errmsg", "Invalid username");
-//			response.sendRedirect("SignLog.jsp");
+			// response.sendRedirect("SignLog.jsp");
 		}
 		else {
 			try {
 				User.add(username, password, email, fname + lname, "", "");
-			} catch (SQLException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
+			} catch (SQLException sqle) {
+				sqle.printStackTrace();
 			}
 		}
 		
 	}
-
-	
 
 }
