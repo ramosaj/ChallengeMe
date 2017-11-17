@@ -16,8 +16,10 @@
 
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
 <style>
-
-			
+.navbar {
+	margin-bottom: 0;
+	border-radius: 0%;
+}
 </style>
 <script>
 	function getnumusers(){
