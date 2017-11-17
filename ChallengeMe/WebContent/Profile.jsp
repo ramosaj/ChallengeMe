@@ -42,7 +42,7 @@
 				<h1 id="full-name-value"></h1>
 			</div>
 			<div id="username">
-				@<span id="username-value"></span>
+				<b><span id="username-value"></span></b>
 			</p>
 			</div>
 			<div id="joined">

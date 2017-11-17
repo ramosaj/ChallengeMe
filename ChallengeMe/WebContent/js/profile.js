@@ -60,7 +60,7 @@ function getProfileByUrl (url)
             		var user = JSON.parse(getUserRequest.responseText);
         			
             		document.getElementById("full-name-value").innerHTML = user.name;
-	        		document.getElementById("username-value").innerHTML = user.username;
+	        		document.getElementById("username-value").innerHTML = "@" + user.username;
 	        		document.getElementById("joined-value").innerHTML = getDateString(user.createdAt);
 	        		document.getElementById("bio-value").innerHTML = user.bio;
 	        		
