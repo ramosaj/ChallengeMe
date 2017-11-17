@@ -23,6 +23,11 @@ function getDateString (ds)
 	return month + " " + day + ", " + year;
 }
 
+function getChallengePageUrl (username, challengeId)
+{
+	return "/ChallengeMe/Challenge.jsp?username=" + username + "&challengeId=" + challengeId;
+}
+
 function getProfileUrl (username)
 {
 	return "/ChallengeMe/users/" + username;
@@ -95,7 +100,7 @@ function getChallengesByUrl (url)
             		document.getElementById("posted-challenges-count").innerHTML = challenges.length;
             		for (var challenge of challenges) {
             			var challengeLink = document.createElement("a");
-            			challengeLink.href = challenge.url;
+            			challengeLink.href = getChallengePageUrl(username, challenge.id);
             			challengeLink.innerHTML = challenge.name;
             			document.getElementById("posted-challenges").appendChild(challengeLink);
             			document.getElementById("posted-challenges").appendChild(document.createElement("br"));
@@ -131,7 +136,7 @@ function getInterestedChallengesByUrl (url)
 	        		document.getElementById("interested-challenges-count").innerHTML = challenges.length;
             		for (var challenge of challenges) {
             			var challengeLink = document.createElement("a");
-            			challengeLink.href = challenge.url;
+            			challengeLink.href = getChallengePageUrl(challenge.owner.username, challenge.id);
             			challengeLink.innerHTML = challenge.name;
             			document.getElementById("interested-challenges").appendChild(challengeLink);
             			document.getElementById("interested-challenges").appendChild(document.createElement("br"));
@@ -167,7 +172,7 @@ function getCompletedChallengesByUrl (url)
 	        		document.getElementById("completed-challenges-count").innerHTML = challenges.length;
             		for (var challenge of challenges) {
             			var challengeLink = document.createElement("a");
-            			challengeLink.href = challenge.url;
+            			challengeLink.href = getChallengePageUrl(challenge.owner.username, challenge.id);
             			challengeLink.innerHTML = challenge.name;
             			document.getElementById("completed-challenges").appendChild(challengeLink);
             			document.getElementById("completed-challenges").appendChild(document.createElement("br"));
