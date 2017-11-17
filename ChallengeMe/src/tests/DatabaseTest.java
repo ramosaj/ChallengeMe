@@ -5,6 +5,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 
 import java.sql.Connection;
 import java.sql.SQLException;
+import java.util.List;
 
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.AfterEach;
@@ -12,6 +13,7 @@ import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
+import db.Challenge;
 import db.Database;
 import db.User;
 import db.User.UserNotFoundException;
@@ -83,6 +85,19 @@ class DatabaseTest {
     		} catch (SQLException e) {
     			e.printStackTrace();
     			fail("Error in getUser by id: " + e.getMessage());
+    		}
+    }
+    
+    @Test
+    void allChallenge() {
+    		try {
+    			List<Challenge> allChallenges = Challenge.getAll();
+    			for(Challenge challenge : allChallenges) {
+    				System.out.println(challenge.getTitle());
+    			}
+    		
+    		} catch (SQLException e) {
+    			e.printStackTrace();
     		}
     }
 
