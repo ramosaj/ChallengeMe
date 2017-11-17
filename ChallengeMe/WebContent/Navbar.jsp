@@ -7,7 +7,13 @@
   <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js" integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN" crossorigin="anonymous"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.3/umd/popper.min.js" integrity="sha384-vFJXuSJphROIrBnz7yo7oB41mKfc8JzQZiCq4NCceLEaO4IHwicKwpJf9c9IpFgh" crossorigin="anonymous"></script>
   <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-beta.2/js/bootstrap.min.js" integrity="sha384-alpBpkh1PFOepccYVYDB4do5UnbKysX5WZXm3XxPqe5iKTfUKjNkCk9SaVuEZflJ" crossorigin="anonymous"></script>
+  <link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css" rel="stylesheet" integrity="sha384-wvfXpqpZZVQGK6TAh5PVlGOfQNHSoD2xbE+QkPxCAFlNEevoEH3Sl0sibVcOQVnN" crossorigin="anonymous">
   <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+  <style>
+  .fa {
+    font-size: 36px;
+  }
+  </style>
   <script>
     function getnumusers(){
         var ws = new WebSocket("ws://serverSocket blah blah");
@@ -44,10 +50,14 @@
   <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
     <ul class="navbar-nav">
       <li class="nav-item active">
-        <a class="nav-link" href="ChallengePt2.jsp">Home <span class="sr-only">(current)</span></a>
+        <a class="nav-link" href="Feed.jsp">
+          <i class="fa fa-home" aria-hidden="true"></i>
+        </a>
       </li>
       <li class="nav-item">
-        <a class="nav-link" href="Profile.jsp">User Profile</a>
+        <a class="nav-link" href="Profile.jsp">
+          <i class="fa fa-user" aria-hidden="true"></i>
+        </a>
       </li>
       <!--
       <li class="nav-item">
@@ -65,10 +75,8 @@
       <div class="input-group">
         <input id="searchItem" type="text" class="form-control" placeholder="Search...">
         <span class="input-group-btn">
-          <button type="submit" class="btn btn-default">Search
-            <span class="glyphicon glyphicon-search">
-              <span class="sr-only">Search...</span>
-            </span>
+          <button type="submit" class="btn btn-default">
+          	<i class="fa fa-search" aria-hidden="true" style="font-size: 20px;"></i>
           </button>
         </span>
       </div>
