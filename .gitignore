@@ -29,6 +29,6 @@ hs_err_pid*
 /apache-tomcat-9.0.1
 WebContent/WEB-INF/
 .recommenders/
+.settings
 *.DS_Store
-*.settings/
-ChallengeMe/.classpath
+ChallengeMe/.settings

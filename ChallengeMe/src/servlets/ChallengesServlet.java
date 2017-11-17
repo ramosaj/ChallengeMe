@@ -148,7 +148,11 @@ public class ChallengesServlet extends HttpServlet
 	protected void getAllChallenges (HttpServletRequest request, HttpServletResponse response)
 	throws ServletException, IOException
 	{
-		Integer limit = Integer.parseInt(request.getParameter("limit"));
+		Integer limit = null;
+		if (request.getParameter("limit") != null) {
+			limit = Integer.parseInt(request.getParameter("limit"));
+		}
+		
 		String sort = request.getParameter("sort");
 		String order = request.getParameter("order");
 		// for fast development, do not program in sort or limit in queries yet
