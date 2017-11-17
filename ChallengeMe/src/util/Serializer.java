@@ -23,10 +23,6 @@ public class Serializer
 	public static JsonElement getChallengeJSON (Challenge challenge, boolean includeOwner)
 	throws SQLException
 	{
-		Long createdAt = null;
-		if (challenge.getCreateAtDate() != null) {
-			createdAt = challenge.getCreateAtDate().getTime();
-		}
 		
 		JsonObject challengeJSON = new JsonObject();
 		challengeJSON.addProperty("id", challenge.getId());
@@ -37,7 +33,7 @@ public class Serializer
 		challengeJSON.addProperty("interestedUrl", String.format("/ChallengeMe/challenges/%s/%s/interested", challenge.getUser().getName(), challenge.getId()));
 		challengeJSON.addProperty("completedCount", challenge.getCompletedUsers().size());
 		challengeJSON.addProperty("completedUrl", String.format("/ChallengeMe/challenges/%s/%s/completed", challenge.getUser().getName(), challenge.getId()));
-		challengeJSON.addProperty("createdAt", createdAt);
+		challengeJSON.addProperty("createdAt", challenge.getCreateAtDate().toString());
 
 		JsonArray categoriesJSON = new JsonArray();
 		for (String category : challenge.getCategories()) {

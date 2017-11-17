@@ -42,19 +42,14 @@
   		var html = "";
   		for(var i=0;i<response.length;i++){
   			html=html+"<div class=\"row\"> <div class=\"col-sm-12 well\">\n";
-  			html = html+ "<a href="+ response[i].challengeLink + ">" + response[i].title + " </a>\n";
-  			html = html + "<p> Created by: "+response[i].creator +" at "+ response[i].createdAt +"</p>\n";
-  			html=html+"<p>"+response[i].description+"</p>\n";
-  			html=html+"<div class=\"col-md-6\">";
-  			html=html+"<a href=" + response[i].challengeLink+"> Interested Users </a>";
-  			html=html+"</div>";
-  			html=html+"<div class=\"col-md-6\">";
-  			html=html+"<a href="+response[i].challengeLink+"> Users that completed the Challenge </a>";
-  			html=html+"</div>";
-  			html=html+"</div>";
+  			html = html+ "<a href="+ response[i].challengeLink + ">" + response[i].name + " </a>\n";
+  			html = html + "<p> "+response[i].owner.username+" <br /> at "+ response[i].createdAt +"</p>\n";
+  			html=html+"<p>"+response[i].description+"</p>\n <br />";
+  			html = html+"<button type='button' class='btn btn-primary'> Interested </button>";
+  			html = html+"</div>";
+  			html = html+"</div>";
 
   		}
-  		html+="</div>";
   		document.getElementById("feed").innerHTML = html;
   		
   	}
