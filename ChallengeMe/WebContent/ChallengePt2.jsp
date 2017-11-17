@@ -33,13 +33,15 @@
   		//var completed = new XMLHttpRequest();
   		
 
-  		challenges.open('GET','/ChallengeMe/challenges',false);
+  		challenges.open('GET','challenges',false);
+  		challenges.send();
   		alert(challenges.responseText);
   		var response = JSON.parse(challenges.responseText);
   		
   		alert(response.length)
-  		var html = "<div class=\"row\"> <div class=\"col-sm-12 well\">\n";
+  		var html = "";
   		for(var i=0;i<response.length;i++){
+  			html=html+"<div class=\"row\"> <div class=\"col-sm-12 well\">\n";
   			html = html+ "<a href="+ response[i].challengeLink + ">" + response[i].title + " </a>\n";
   			html = html + "<p> Created by: "+response[i].creator +" at "+ response[i].createdAt +"</p>\n";
   			html=html+"<p>"+response[i].description+"</p>\n";
@@ -49,9 +51,10 @@
   			html=html+"<div class=\"col-md-6\">";
   			html=html+"<a href="+response[i].challengeLink+"> Users that completed the Challenge </a>";
   			html=html+"</div>";
+  			html=html+"</div>";
 
   		}
-  		html+="</div></div>";
+  		html+="</div>";
   		document.getElementById("feed").innerHTML = html;
   		
   	}
