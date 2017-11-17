@@ -1,10 +1,12 @@
 package servlets;
 
+import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.PrintWriter;
-import java.sql.Connection;
 import java.sql.SQLException;
+import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
@@ -14,9 +16,11 @@ import javax.servlet.http.HttpServletResponse;
 
 import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
+import com.google.gson.JsonObject;
+import com.google.gson.JsonParser;
+import com.google.gson.JsonPrimitive;
 
 import db.Challenge;
-import db.Database;
 import db.User;
 import util.Serializer;
 
@@ -24,7 +28,6 @@ import util.Serializer;
 public class ChallengesServlet extends HttpServlet
 {
 	private static final long serialVersionUID = 1L;
-	private static final Connection dbConnection = Database.getConnection(true);
 		
 	/**
 	 * A inner helper class to extract parameters from a requested URL paths.
@@ -44,7 +47,7 @@ public class ChallengesServlet extends HttpServlet
 			String[] splits = path.split("/");
 			
 			if (splits.length >= 2) {
-				challengeId = splits[1];
+				username = splits[1];
 			}
 			if (splits.length >= 3) {
 				challengeId = Long.parseLong(splits[2]);
@@ -62,8 +65,9 @@ public class ChallengesServlet extends HttpServlet
 		String pathInfo = request.getPathInfo();
 		PathExtractor extractor = new PathExtractor(pathInfo);
 		
-		if (extractor.challengeId == null) {
-			response.sendError(HttpServletResponse.SC_BAD_REQUEST);
+		// GET /challenges
+		if (extractor.username == null || extractor.challengeId == null) {
+			getAllChallenges(request, response);
 			return;
 		}
 		
@@ -71,61 +75,99 @@ public class ChallengesServlet extends HttpServlet
 		if (extractor.toBeQueried == null) {
 			getChallenge(extractor.username, extractor.challengeId, request, response);
 		}
-		// TODO: other url mappings
+		// GET /challenges/:username/:challenge/categories
+		else if (extractor.toBeQueried.equals("categories")) {
+			listCategories(extractor.username, extractor.challengeId, request, response);
+		}
+		// GET /challenges/:username/:challenge/interested
+		else if (extractor.toBeQueried.equals("interested")) {
+			getInterestedUsers(extractor.username, extractor.challengeId, request, response);
+		}
+		// GET /challenges/:username/:challenge/completed
+		else if (extractor.toBeQueried.equals("completed")) {
+			getCompletedUsers(extractor.username, extractor.challengeId, request, response);
+		}
 		else {
-			if(extractor.toBeQueried.equals("interested"))
-			{
-				listInterestedChallenges(extractor.challengeId, request, response);
-			}
-			if(extractor.toBeQueried.equals("completed"))
-			{
-				listCompletedChallenges(extractor.challengeId, request, response);
-			}
+			response.sendError(HttpServletResponse.SC_BAD_REQUEST);
 		}
 	}
 	
-	protected void listInterestedChallenges (long challenge, HttpServletRequest request, HttpServletResponse response)
+	protected void doPut (HttpServletRequest request, HttpServletResponse response)
 	throws ServletException, IOException
 	{
-		JsonArray usersJSON = new JsonArray();
+		// url mapping
+		String pathInfo = request.getPathInfo();
+		PathExtractor extractor = new PathExtractor(pathInfo);
 		
-		try {
-			// get user challenges
-			List<User> interestedUsers = Challenge.get(challenge).getInterestedUsers();
-			for (User user : interestedUsers) {
-				JsonElement userJSON = Serializer.getUserJSON(user);
-				usersJSON.add(userJSON);
-			}
-		}
-		catch (SQLException sqle) {
-			sqle.printStackTrace();
+		if (extractor.username == null || extractor.challengeId == null) {
+			response.sendError(HttpServletResponse.SC_BAD_REQUEST);
+			return;
 		}
 		
-		JsonElement payload = usersJSON;
-		PrintWriter out = response.getWriter();
-		response.setContentType("application/json");
-		response.setStatus(HttpServletResponse.SC_OK);
-		out.print(payload.toString());
-		out.flush();
+		// PUT /challenges/:username/:challenge/categories
+		if (extractor.toBeQueried.equals("categories")) {
+			replaceCategories(extractor.username, extractor.challengeId, request, response);
+		}
+		else {
+			response.sendError(HttpServletResponse.SC_BAD_REQUEST);
+		}
 	}
-	protected void listCompletedChallenges (long challenge, HttpServletRequest request, HttpServletResponse response)
+	
+	protected void doPost (HttpServletRequest request, HttpServletResponse response)
 	throws ServletException, IOException
 	{
-		JsonArray usersJSON = new JsonArray();
+		// url mapping
+		String pathInfo = request.getPathInfo();
+		PathExtractor extractor = new PathExtractor(pathInfo);
+		
+		if (extractor.username == null || extractor.challengeId == null) {
+			response.sendError(HttpServletResponse.SC_BAD_REQUEST);
+			return;
+		}
+		
+		// PATCH /challenges/:username/:challenge
+		if (extractor.toBeQueried == null) {
+			editChallenge(extractor.username, extractor.challengeId, request, response);
+		}
+		// TODO: other url mappings
+		else {
+			response.sendError(HttpServletResponse.SC_BAD_REQUEST);
+		}
+	}
+	
+	/**
+	 * GET /challenges
+	 * 
+	 * Get all challenges.
+	 * 
+	 * @param request
+	 * @param response
+	 * @throws ServletException
+	 * @throws IOException
+	 */
+	protected void getAllChallenges (HttpServletRequest request, HttpServletResponse response)
+	throws ServletException, IOException
+	{
+		Integer limit = Integer.parseInt(request.getParameter("limit"));
+		String sort = request.getParameter("sort");
+		String order = request.getParameter("order");
+		// for fast development, do not program in sort or limit in queries yet
+		
+		JsonArray challengesJSON = new JsonArray();
 		
 		try {
 			// get user challenges
-			List<User> interestedUsers = Challenge.get(challenge).getCompletedUsers();
-			for (User user : interestedUsers) {
-				JsonElement userJSON = Serializer.getUserJSON(user);
-				usersJSON.add(userJSON);
+			List<Challenge> challenges = Challenge.getAll();
+			for (Challenge challenge : challenges) {
+				JsonElement challengeJSON = Serializer.getChallengeJSON(challenge, true);
+				challengesJSON.add(challengeJSON);
 			}
 		}
 		catch (SQLException sqle) {
 			sqle.printStackTrace();
 		}
 		
-		JsonElement payload = usersJSON;
+		JsonElement payload = challengesJSON;
 		PrintWriter out = response.getWriter();
 		response.setContentType("application/json");
 		response.setStatus(HttpServletResponse.SC_OK);
@@ -162,4 +204,204 @@ public class ChallengesServlet extends HttpServlet
 		out.print(payload.toString());
 		out.flush();
 	}
+	
+	/**
+	 * POST /challenges/:username/:challenge
+	 * 
+	 * Edit a challenge's title and description.
+	 * 
+	 * NOTE: To edit a challenge's categories, use the categories endpoint.
+	 * 
+	 * @param username
+	 * @param challengeId
+	 * @param request
+	 * @param response
+	 * @throws ServletException
+	 * @throws IOException
+	 */
+	protected void editChallenge (String username, Long challengeId, HttpServletRequest request, HttpServletResponse response)
+	throws ServletException, IOException
+	{
+		// get request body
+		BufferedReader br = request.getReader();
+		String requestBodyString = br.lines().collect(Collectors.joining(System.lineSeparator()));
+		JsonObject requestBody = new JsonParser().parse(requestBodyString).getAsJsonObject();
+		
+		// extract values from request body
+		String title = requestBody.get("title").getAsString();
+		String description = requestBody.get("description").getAsString();
+
+		Challenge challenge = null;
+		JsonElement payload = null;
+		try {
+			challenge = Challenge.get(challengeId);
+			challenge.setTitle(title);
+			challenge.setDescription(description);
+			challenge.save();
+			payload = Serializer.getChallengeJSON(challenge, true);
+		}
+		catch (SQLException sqle) {
+			sqle.printStackTrace();
+		}
+		
+		PrintWriter out = response.getWriter();
+		response.setContentType("application/json");
+		response.setStatus(HttpServletResponse.SC_OK);
+		out.print(payload.toString());
+		out.flush();
+	}
+	
+	/**
+	 * GET /challenges/:username/:challenge/categories
+	 * 
+	 * List all categories for a challenge.
+	 * 
+	 * @param username
+	 * @param challengeId
+	 * @param request
+	 * @param response
+	 * @throws ServletException
+	 * @throws IOException
+	 */
+	protected void listCategories (String username, Long challengeId, HttpServletRequest request, HttpServletResponse response)
+	throws ServletException, IOException
+	{
+		JsonArray categoriesJSON = new JsonArray();
+		
+		try {
+			// get user challenges
+			Challenge challenge = Challenge.get(challengeId);
+			for (String category : challenge.getCategories()) {
+				categoriesJSON.add(new JsonPrimitive(category));
+			}
+		}
+		catch (SQLException sqle) {
+			sqle.printStackTrace();
+		}
+		
+		JsonObject payload = new JsonObject();
+		payload.add("names", categoriesJSON);
+		
+		PrintWriter out = response.getWriter();
+		response.setContentType("application/json");
+		response.setStatus(HttpServletResponse.SC_OK);
+		out.print(payload.toString());
+		out.flush();
+	}
+	
+	/**
+	 * GET /challenges/:username/:challenge/interested
+	 * 
+	 * List all interested users of a challenge.
+	 * 
+	 * @param username
+	 * @param challengeId
+	 * @param request
+	 * @param response
+	 * @throws ServletException
+	 * @throws IOException
+	 */
+	protected void getInterestedUsers (String username, Long challengeId, HttpServletRequest request, HttpServletResponse response)
+	throws ServletException, IOException
+	{
+		JsonArray interestedUsers = new JsonArray();
+		
+		try {
+			// get user challenges
+			Challenge challenge = Challenge.get(challengeId);
+			for (User user : challenge.getInterestedUsers()) {
+				interestedUsers.add(Serializer.getUserJSON(user));
+			}
+		}
+		catch (SQLException sqle) {
+			sqle.printStackTrace();
+		}
+		
+		JsonElement payload = interestedUsers;
+		
+		PrintWriter out = response.getWriter();
+		response.setContentType("application/json");
+		response.setStatus(HttpServletResponse.SC_OK);
+		out.print(payload.toString());
+		out.flush();
+	}
+	
+	/**
+	 * GET /challenges/:username/:challenge/completed
+	 * 
+	 * List all users who have completed a challenge.
+	 * 
+	 * @param username
+	 * @param challengeId
+	 * @param request
+	 * @param response
+	 * @throws ServletException
+	 * @throws IOException
+	 */
+	protected void getCompletedUsers (String username, Long challengeId, HttpServletRequest request, HttpServletResponse response)
+	throws ServletException, IOException
+	{
+		JsonArray completedUsers = new JsonArray();
+		
+		try {
+			// get user challenges
+			Challenge challenge = Challenge.get(challengeId);
+			for (User user : challenge.getCompletedUsers()) {
+				completedUsers.add(Serializer.getUserJSON(user));
+			}
+		}
+		catch (SQLException sqle) {
+			sqle.printStackTrace();
+		}
+		
+		JsonElement payload = completedUsers;
+		
+		PrintWriter out = response.getWriter();
+		response.setContentType("application/json");
+		response.setStatus(HttpServletResponse.SC_OK);
+		out.print(payload.toString());
+		out.flush();
+	}
+	
+	/**
+	 * PUT /challenges/:username/:challenge/categories
+	 * 
+	 * Replace all categories for a challenge.
+	 * 
+	 * @param username
+	 * @param challengeId
+	 * @param request
+	 * @param response
+	 * @throws ServletException
+	 * @throws IOException
+	 */
+	protected void replaceCategories (String username, Long challengeId, HttpServletRequest request, HttpServletResponse response)
+	throws ServletException, IOException
+	{
+		// get request body
+		BufferedReader br = request.getReader();
+		String requestBodyString = br.lines().collect(Collectors.joining(System.lineSeparator()));
+		JsonObject requestBody = new JsonParser().parse(requestBodyString).getAsJsonObject();
+		
+		// extract values from request body
+		List<String> categories = new ArrayList<>();
+		JsonArray categoriesJSONArray = requestBody.get("names").getAsJsonArray();
+		for (JsonElement c : categoriesJSONArray) {
+			categories.add(c.getAsString());
+		}
+		
+		try {
+			Challenge.replaceCategories(challengeId, categories);
+		}
+		catch (SQLException sqle) {
+			sqle.printStackTrace();
+		}
+		
+		PrintWriter out = response.getWriter();
+		response.setContentType("application/json");
+		response.setStatus(HttpServletResponse.SC_OK);
+		out.print(requestBodyString);
+		out.flush();
+	}
+	
 }

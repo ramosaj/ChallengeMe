@@ -194,11 +194,26 @@ public class Challenge
 	public static Challenge get (Long id)
 	throws SQLException
 	{
-		PreparedStatement ps = connection.prepareStatement("SELECT * FROM " + TBL_NAME + " WHERE id=?");
+		PreparedStatement ps = connection.prepareStatement("SELECT * FROM " + TBL_NAME + " WHERE challengeId=?");
 		ps.setLong(1, id);
 		
 		ResultSet rs = ps.executeQuery();
+		rs.next();
 		return Challenge.getFromResultSet(rs, LAZY_LOAD);
+	}
+	
+	public static List<Challenge> getAll ()
+	throws SQLException
+	{
+		PreparedStatement ps = connection.prepareStatement("SELECT * FROM " + TBL_NAME);
+		
+		ResultSet rs = ps.executeQuery();
+		List<Challenge> challenges = new ArrayList<>();
+		while (rs.next()) {
+			Challenge challenge = Challenge.getFromResultSet(rs, true);
+			challenges.add(challenge);
+		}
+		return challenges;
 	}
 	
 	/**
@@ -282,7 +297,7 @@ public class Challenge
 	protected static Challenge getFromResultSet (ResultSet rs, boolean lazyLoad)
 	throws SQLException
 	{
-		Long id = rs.getLong("id");
+		Long id = rs.getLong("challengeId");
 		Long userId = rs.getLong("userId");
 		String title = rs.getString("title");
 		String description = rs.getString("description");

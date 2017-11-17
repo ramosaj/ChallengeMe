@@ -21,6 +21,7 @@ public class Database
 		Connection cnx = null;
 		
 		try {
+			Class.forName("com.microsoft.sqlserver.jdbc.SQLServerDriver");
 			connectionUri = String.format("jdbc:sqlserver://%s:%s;database=%s;user=%s;password=%s;useSSL=%s", hostname, port, dbName, user, password, useSSL);
 			if (Database.connection == null) {
 				connection = DriverManager.getConnection(connectionUri);
@@ -35,6 +36,9 @@ public class Database
 		}
 		catch (SQLException sqle) {
 			sqle.printStackTrace();
+		} catch (ClassNotFoundException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
 		}
 		
 		return cnx;

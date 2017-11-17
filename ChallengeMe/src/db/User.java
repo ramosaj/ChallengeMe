@@ -322,7 +322,7 @@ public class User
 	private static List<Challenge> getChallenges (Long userId)
 	throws SQLException
 	{
-		PreparedStatement ps = connection.prepareStatement("SELECT * FROM" + Challenge.TBL_NAME + " WHERE userId=?");
+		PreparedStatement ps = connection.prepareStatement("SELECT * FROM " + Challenge.TBL_NAME + " WHERE userId=?");
 		ps.setLong(1, userId);
 		
 		ResultSet rs = ps.executeQuery();
