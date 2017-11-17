@@ -2,7 +2,6 @@ package servlets;
 
 import java.io.IOException;
 import java.sql.SQLException;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.Callable;
 import java.util.concurrent.ExecutionException;
@@ -13,6 +12,8 @@ import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+
+import com.google.gson.Gson;
 
 import db.Challenge;
 import db.User;
@@ -26,6 +27,8 @@ import threads.SearchUserThread;
 public class SearchServlet extends HttpServlet {
 	private static final long serialVersionUID = 1L;
 	private FutureTask[] tasks = new FutureTask[2];
+	private List<User> displayUser;
+	private List<Challenge> displayChallenge;
        
     /**
      * @see HttpServlet#HttpServlet()
@@ -53,21 +56,25 @@ public class SearchServlet extends HttpServlet {
 				Thread t = new Thread(task);
 				t.start();
 			}
-			List<User> displayedUser = (List<User>)this.tasks[0].get();
-			List<Challenge> displayChallenge = (List<Challenge>)this.tasks[1].get();
+			this.displayUser = (List<User>)this.tasks[0].get();
+			this.displayChallenge = (List<Challenge>)this.tasks[1].get();
 			
 		} catch (SQLException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
-		}
-		catch (InterruptedException e) {
+		} catch (InterruptedException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		} catch (ExecutionException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-		
+		Gson gson = new Gson();
+		String sendUsers = gson.toJson(this.displayUser);
+		String sendChallenge = gson.toJson(this.displayChallenge);
+		request.setAttribute("userResult", sendUsers);
+		request.setAttribute("challengeResult", sendChallenge);
+		response.sendRedirect("result.jsp");
 	}
 
 	/**

@@ -65,8 +65,12 @@
       <div class="input-group">
         <input id="searchItem" type="text" class="form-control" placeholder="Search...">
         <span class="input-group-btn">
+<<<<<<< HEAD
           <button type="submit" class="btn btn-default">Search
             <span class="glyphicon glyphicon-search">
+=======
+          <button type="submit" class="btn btn-default">
+>>>>>>> 10b94c11a3d418ff7f62c0b0f2faa000959cc086
               <span class="sr-only">Search...</span>
             </span>
           </button>
