@@ -23,20 +23,24 @@ public class LoginServlet extends HttpServlet {
 	/**
 	 * @see HttpServlet#doGet(HttpServletRequest request, HttpServletResponse response)
 	 */
-	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-		// TODO Auto-generated method stub
-//		response.getWriter().append("Served at: ").append(request.getContextPath());
+	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException
+	{
+		// Why are we using the GET protocol for logging in...
 		String username = request.getParameter("username");
 		String password = request.getParameter("password");
-		boolean exist = false;
+		
+		Boolean userExists = null;
 		try {
-			exist = User.validation(username, password);
-		} catch (SQLException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+			userExists = User.validation(username, password);
 		}
-		if (!exist)
-		{
+		catch (SQLException sqle) {
+			sqle.printStackTrace();
+		}
+		finally {
+			userExists = false;
+		}
+		
+		if (!userExists) {
 			request.setAttribute("errmsg", "Invalid username and password.");
 			response.sendRedirect("SignLog.jsp");
 		}
@@ -45,14 +49,13 @@ public class LoginServlet extends HttpServlet {
 			User currUser = null;
 			try {
 				currUser = User.get(username);
-			} catch (SQLException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			} catch (UserNotFoundException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
+			} catch (SQLException sqle) {
+				sqle.printStackTrace();
+			} catch (UserNotFoundException unfe) {
+				unfe.printStackTrace();
 			}
 			request.getSession().setAttribute("userID", currUser.getId());
+			request.getSession().setAttribute("username", currUser.getUsername());
 		}
 	}
 }
