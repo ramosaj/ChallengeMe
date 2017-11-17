@@ -15,8 +15,8 @@ import java.util.List;
  * [X] `add` static method for creating a User
  * [X] `update` static method for updating a User
  * [X] `save` method for creating/updating an existing User
- * [ ] include created time
- * [ ] include updated time
+ * [X] include created time
+ * [X] include updated time
  * 
  * @author hintoso
  * @since November 11, 2017
@@ -40,17 +40,16 @@ public class User
 	private String bio;
 	private String avatarURL;
 	
-	
 	private List<Challenge> challenges;
 	private List<Challenge> completedChallenges;
 	private List<Challenge> interestedChallenges;
-	private Date createAt;
+	private Date createdAt;
 	
 	public static class UserNotFoundException extends Exception {
 		private static final long serialVersionUID = -7465057662586463032L;
 	}
 
-	public User (Long id, String username, String password, String email, String name, String bio, String avatarURL)
+	public User (Long id, String username, String password, String email, String name, String bio, String avatarURL, Date createdAt)
 	{
 		this.id = id;
 		this.username = username;
@@ -59,9 +58,10 @@ public class User
 		this.bio = bio;
 		this.avatarURL = avatarURL;
 		this.email = email;
+		this.createdAt = createdAt;
 	}
 	
-	public User (Long id, String username, String password, String name, String bio, String avatarURL, List<Challenge> challenges, List<Challenge> completedChallenges,  List<Challenge> interestedChallenges)  
+	public User (Long id, String username, String password, String name, String bio, String avatarURL, Date createdAt, List<Challenge> challenges, List<Challenge> completedChallenges,  List<Challenge> interestedChallenges)  
 	{
 		this.id = id;
 		this.username = username;
@@ -131,7 +131,7 @@ public class User
 	
 	public Date getCreateAtDate() 
 	{
-		return createAt;
+		return createdAt;
 	}
 
 	public List<Challenge> getChallenges ()
@@ -178,7 +178,7 @@ public class User
 		else {
 			User.update(id, username, name, email, bio, avatarURL);
 		}
-		createAt = new Date();
+		
 		assert(id != null);
 	}
 	
@@ -315,16 +315,17 @@ public class User
 		String bio = rs.getString("bio");
 		String avatarURL = rs.getString("avatarURL");
 		String email = rs.getString("email");
-		User user = null;
+		Date createdAt = rs.getDate("createdAt");
 		
+		User user = null;
 		if (lazyLoad) {
-			user = new User(id, username, password, email, name, bio, avatarURL);
+			user = new User(id, username, password, email, name, bio, avatarURL, createdAt);
 		}
 		else {
 	  		List<Challenge> challenges = getChallenges(id);
 	 		List<Challenge> completedChallenges = getCompletedChallenges(id);
 	 		List<Challenge> interestedChallenges = getInterestedChallenges(id);
-	 		user = new User(id, username, password, name, bio, avatarURL, challenges, completedChallenges, interestedChallenges);
+	 		user = new User(id, username, password, name, bio, avatarURL, createdAt, challenges, completedChallenges, interestedChallenges);
 		}
 		
 		return user;
@@ -352,10 +353,12 @@ public class User
 	/**
 	 * Get all the users from the database
 	 * 
+	 * @author Peter Chen
+	 * 
 	 * @return
 	 * @throws SQLException
 	 */
-	public static List<User> getAll() 
+	public static List<User> getAll () 
 	throws SQLException
 	{
 		PreparedStatement ps = connection.prepareStatement("SELECT * FROM " + TBL_NAME);

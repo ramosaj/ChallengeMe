@@ -21,9 +21,10 @@
 	</style>
 	<script type="text/javascript">
 		var username = "<%= session.getAttribute("username") %>";
+		username = "presIdent";
 		
 		window.onload = function () {
-			setTimeout(function () { getProfile(username); }, 1000);
+			getProfile(username);
 		}
 	</script>
 </head>
@@ -52,13 +53,13 @@
 	<div class="container">
 		<div class="row">
 			<div class="col" id="posted-challenges">
-				<h4>Posted Challenges</h4>
+				<h4>Posted Challenges (<span id="posted-challenges-count"></span>)</h4>
 			</div>
 			<div class="col" id="completed-challenges">
-				<h4>Completed Challenges</h4>
+				<h4>Completed Challenges (<span id="completed-challenges-count"></span>)</h4>
 			</div>
 			<div class="col" id="interested-challenges">
-				<h4>Interested Challenges</h4>
+				<h4>Interested Challenges (<span id="interested-challenges-count"></span>)</h4>
 			</div>
 		</div>
 	</div>

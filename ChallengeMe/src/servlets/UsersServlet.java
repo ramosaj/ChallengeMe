@@ -265,9 +265,9 @@ public class UsersServlet extends HttpServlet
 	protected void listInterestedChallenges (String username, HttpServletRequest request, HttpServletResponse response)
 	throws ServletException, IOException, UserNotFoundException
 	{
-		Integer limit = Integer.parseInt(request.getParameter("limit"));
-		String sort = request.getParameter("sort");
-		String order = request.getParameter("order");
+		// Integer limit = Integer.parseInt(request.getParameter("limit"));
+		// String sort = request.getParameter("sort");
+		// String order = request.getParameter("order");
 		// for fast development, do not program in sort or limit in queries yet
 		
 		JsonArray challengesJSON = new JsonArray();
@@ -387,9 +387,9 @@ public class UsersServlet extends HttpServlet
 	protected void listCompletedChallenges (String username, HttpServletRequest request, HttpServletResponse response)
 	throws ServletException, IOException, UserNotFoundException
 	{
-		Integer limit = Integer.parseInt(request.getParameter("limit"));
-		String sort = request.getParameter("sort");
-		String order = request.getParameter("order");
+		// Integer limit = Integer.parseInt(request.getParameter("limit"));
+		// String sort = request.getParameter("sort");
+		// String order = request.getParameter("order");
 		// for fast development, do not program in sort or limit in queries yet
 		
 		JsonArray challengesJSON = new JsonArray();
@@ -509,9 +509,9 @@ public class UsersServlet extends HttpServlet
 	protected void listChallenges (String username, HttpServletRequest request, HttpServletResponse response)
 	throws ServletException, IOException, UserNotFoundException
 	{
-		Integer limit = Integer.parseInt(request.getParameter("limit"));
-		String sort = request.getParameter("sort");
-		String order = request.getParameter("order");
+		// Integer limit = Integer.parseInt(request.getParameter("limit"));
+		// String sort = request.getParameter("sort");
+		// String order = request.getParameter("order");
 		// for fast development, do not program in sort or limit in queries yet
 		
 		JsonArray challengesJSON = new JsonArray();
