@@ -106,7 +106,7 @@
       </div>
       -->
       
-        <p>Loading...</p>
+        <h2>Loading...</h2>
       </div>
     </div>
   </div>

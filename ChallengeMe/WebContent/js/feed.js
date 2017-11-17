@@ -8,7 +8,9 @@ function getChallenges ()
             if (getChallengesRequest.status === 200) {
             		var challenges = JSON.parse(getChallengesRequest.responseText);
         			
+            		// get rid of the 'Loading...' text
             		document.getElementById("feed").innerHTML = null;
+            		// render every challenge element
             		for (var challenge of challenges) {
             			var challengeDiv = createChallengeDiv(challenge);
             			document.getElementById("feed").appendChild(challengeDiv);
@@ -43,6 +45,8 @@ function createChallengeDiv (challenge)
 		// TODO
 	}
 	nameLink.innerHTML = challenge.name;
+	var nameHeaderLink = document.createElement("h2");
+	nameHeaderLink.appendChild(nameLink);
 	// username
 	var usernameParagraph = document.createElement("p");
 	usernameParagraph.innerHTML = challenge.owner.username;
@@ -60,7 +64,7 @@ function createChallengeDiv (challenge)
 	interestedButton.innerHTML = "Interested";
 	
 	// add all attributes to colDiv
-	colDiv.appendChild(nameLink);
+	colDiv.appendChild(nameHeaderLink);
 	colDiv.appendChild(usernameParagraph);
 	colDiv.appendChild(dateParagraph);
 	colDiv.appendChild(document.createElement("br"));
