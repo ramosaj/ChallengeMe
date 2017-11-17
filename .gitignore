@@ -27,7 +27,6 @@ hs_err_pid*
 .idea/
 /.metadata/
 /apache-tomcat-9.0.1
-WebContent/WEB-INF/
 .recommenders/
 .settings
 *.DS_Store
