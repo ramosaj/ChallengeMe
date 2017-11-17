@@ -63,10 +63,6 @@ function getProfileByUrl (url)
 	        		document.getElementById("username-value").innerHTML = "@" + user.username;
 	        		document.getElementById("joined-value").innerHTML = getDateString(user.createdAt);
 	        		document.getElementById("bio-value").innerHTML = user.bio;
-	        		
-	        		getChallengesByUrl(user.challengesUrl);
-	        		getInterestedChallengesByUrl(user.interestedUrl);
-	        		getCompletedChallengesByUrl(user.completedUrl);
             }
             else {
                 console.error(getUserRequest.statusText);
@@ -83,8 +79,6 @@ function getProfileByUrl (url)
 function getChallenges (username)
 {
 	var url = getChallengesUrl(username);
-	// XXX
-	url = "http://localhost:8080/ChallengeMe/Profile.jsp";
 	getChallengesByUrl(url);
 }
 

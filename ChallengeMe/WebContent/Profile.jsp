@@ -32,6 +32,9 @@
 		
 		window.onload = function () {
 			getProfile(username);
+			getChallenges(username);
+			getInterestedChallenges(username);
+			getCompletedChallenges(username);
 		}
 	</script>
 </head>
