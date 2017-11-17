@@ -23,7 +23,10 @@ import java.util.List;
  */
 public class User
 {
-	public static final String TBL_NAME = "users";
+	public static final String TBL_NAME = "Users";
+	
+	private static final String insertHeader = "INSERT INTO " + TBL_NAME + " ";
+	private static final String updateHeader = "UPDATE " + TBL_NAME + " ";
 	
 	protected static final Boolean LAZY_LOAD = true;
 	
@@ -165,7 +168,7 @@ public class User
 	throws SQLException
 	{
 		if (id == null) {
-			// adding a challenge
+			// adding a user
 			long userId = User.add(username, password, name, bio, avatarURL);
 			// update the id
 			id = userId;
@@ -187,9 +190,8 @@ public class User
 	public static User get (Long id)
 	throws SQLException, UserNotFoundException
 	{
-		PreparedStatement ps = connection.prepareStatement("SELECT * FROM ? WHERE id=?");
-		ps.setString(1, TBL_NAME);
-		ps.setLong(2, id);
+		PreparedStatement ps = connection.prepareStatement("SELECT * FROM " + TBL_NAME + " WHERE userId=?");
+		ps.setLong(1, id);
 		
 		ResultSet rs = ps.executeQuery();
 
@@ -212,9 +214,8 @@ public class User
 	public static User get (String username)
 	throws SQLException, UserNotFoundException
 	{
-		PreparedStatement ps = connection.prepareStatement("SELECT * FROM ? WHERE username=?");
-		ps.setString(1, TBL_NAME);
-		ps.setString(2, username);
+		PreparedStatement ps = connection.prepareStatement("SELECT * FROM " + TBL_NAME + " WHERE username=?");
+		ps.setString(1, username);
 		
 		ResultSet rs = ps.executeQuery();
 		if (!rs.next()) {
@@ -241,13 +242,14 @@ public class User
 	public static long add (String username, String password, String name, String bio, String avatarURL)
 	throws SQLException
 	{
-		PreparedStatement ps = connection.prepareStatement("INSERT INTO ? (username, password, name, bio, avatarURL) VALUES (?, ?, ?, ?, ?)", Statement.RETURN_GENERATED_KEYS);
-		ps.setString(1, TBL_NAME);
-		ps.setString(2, username);
-		ps.setString(3, password);
-		ps.setString(4, name);
-		ps.setString(5, bio);
-		ps.setString(6, avatarURL);
+		String sqlHeader = (insertHeader + "(username, password, name, bio, avatarURL) VALUES ");
+		PreparedStatement ps = connection.prepareStatement(sqlHeader + "(?, ?, ?, ?, ?);", Statement.RETURN_GENERATED_KEYS);
+		
+		ps.setString(1, username);
+		ps.setString(2, password);
+		ps.setString(3, name);
+		ps.setString(4, bio);
+		ps.setString(5, avatarURL);
 				
 		int userCreated = ps.executeUpdate();
 		assert (userCreated == 0 || userCreated == 1);
@@ -256,20 +258,21 @@ public class User
 			throw new SQLException("Failed to create challenge.");
 		}
 		
-		Long userId = ps.getGeneratedKeys().getLong(1);
+		ResultSet rs = ps.getGeneratedKeys();
+		rs.next();
+		long userId = rs.getLong(1);
 		return userId;
 	}
 	
 	public static void update (Long userId, String username, String name, String bio, String avatarURL)
 	throws SQLException
 	{
-		PreparedStatement ps = connection.prepareStatement("UPDATE ? SET username=?, name=?, bio=?, avatarURL=?, WHERE userId=?");
-		ps.setString(1, TBL_NAME);
-		ps.setString(2, username);
-		ps.setString(3, name);
-		ps.setString(4, bio);
-		ps.setString(5, avatarURL);
-		ps.setLong(6, userId);
+		PreparedStatement ps = connection.prepareStatement(updateHeader + "SET username=?, name=?, bio=?, avatarURL=? WHERE userId=?");
+		ps.setString(1, username);
+		ps.setString(2, name);
+		ps.setString(3, bio);
+		ps.setString(4, avatarURL);
+		ps.setLong(5, userId);
 		int usersUpdated = ps.executeUpdate();
 		assert (usersUpdated == 0 || usersUpdated == 1);
 	}
@@ -277,7 +280,7 @@ public class User
 	protected static User getFromResultSet (ResultSet rs, boolean lazyLoad)
 	throws SQLException
 	{
-		Long id = rs.getLong("id");
+		Long id = rs.getLong("userId");
 		String username = rs.getString("username");
 		String password = rs.getString("password");
 		String name = rs.getString("name");
@@ -308,9 +311,9 @@ public class User
 	public static void changePassword (Long userId, String password)
 	throws SQLException
 	{
-		PreparedStatement ps = connection.prepareStatement("UPDATE ? SET password=? WHERE id=?");
-		ps.setString(1, TBL_NAME);
-		ps.setString(4, password);
+		PreparedStatement ps = connection.prepareStatement(updateHeader + "SET password=? WHERE userId=?");
+		ps.setString(1, password);
+		ps.setLong(2, userId);
 		
 		int usersUpdated = ps.executeUpdate();
 		assert (usersUpdated == 0 || usersUpdated == 1);
@@ -319,9 +322,8 @@ public class User
 	private static List<Challenge> getChallenges (Long userId)
 	throws SQLException
 	{
-		PreparedStatement ps = connection.prepareStatement("SELECT * FROM ? WHERE userId=?");
-		ps.setString(1, Challenge.TBL_NAME);
-		ps.setLong(2, userId);
+		PreparedStatement ps = connection.prepareStatement("SELECT * FROM" + Challenge.TBL_NAME + " WHERE userId=?");
+		ps.setLong(1, userId);
 		
 		ResultSet rs = ps.executeQuery();
 		List<Challenge> challenges = new ArrayList<>(); 
@@ -334,9 +336,8 @@ public class User
 	private static List<Challenge> getCompletedChallenges (Long userId)
 	throws SQLException
 	{
-		PreparedStatement ps = connection.prepareStatement("SELECT * FROM ? WHERE userId=?");
-		ps.setString(1, CompletedChallenge.TBL_NAME);
-		ps.setLong(2, userId);
+		PreparedStatement ps = connection.prepareStatement("SELECT * FROM " + CompletedChallenge.TBL_NAME + " WHERE userId=?");
+		ps.setLong(1, userId);
 		
 		ResultSet rs = ps.executeQuery();
 		List<Challenge> completedChallenges = new ArrayList<>(); 
@@ -350,9 +351,8 @@ public class User
 	private static List<Challenge> getInterestedChallenges (Long userId)
 	throws SQLException
 	{
-		PreparedStatement ps = connection.prepareStatement("SELECT * FROM ? WHERE userId=?");
-		ps.setString(1, InterestedChallenge.TBL_NAME);
-		ps.setLong(2, userId);
+		PreparedStatement ps = connection.prepareStatement("SELECT * FROM " + InterestedChallenge.TBL_NAME + " WHERE userId=?");
+		ps.setLong(1, userId);
 		
 		ResultSet rs = ps.executeQuery();
 		List<Challenge> completedChallenges = new ArrayList<>(); 
@@ -366,10 +366,9 @@ public class User
 	public static boolean checkInterest (Long userId, Long challengeId)
 	throws SQLException
 	{
-		PreparedStatement ps = connection.prepareStatement("SELECT * FROM ? WHERE userId=? AND challengeId=?");
-		ps.setString(1, InterestedChallenge.TBL_NAME);
-		ps.setLong(2, userId);
-		ps.setLong(3, challengeId);
+		PreparedStatement ps = connection.prepareStatement("SELECT * FROM "+ InterestedChallenge.TBL_NAME + " WHERE userId=? AND challengeId=?");
+		ps.setLong(1, userId);
+		ps.setLong(2, challengeId);
 		
 		ResultSet rs = ps.executeQuery();
 		return rs.next();
@@ -383,10 +382,9 @@ public class User
 			return false;
 		}
 		
-		PreparedStatement ps = connection.prepareStatement("INSERT INTO ? (userId, challengeId) VALUES (?, ?)");
-		ps.setString(1, InterestedChallenge.TBL_NAME);
-		ps.setLong(2, userId);
-		ps.setLong(3, challengeId);
+		PreparedStatement ps = connection.prepareStatement("INSERT INTO " + InterestedChallenge.TBL_NAME + " (userId, challengeId) VALUES (?, ?)");
+		ps.setLong(1, userId);
+		ps.setLong(2, challengeId);
 		
 		int interestedPresented = ps.executeUpdate();
 		assert (interestedPresented == 0 || interestedPresented == 1);
@@ -401,10 +399,9 @@ public class User
 			return false;
 		}
 		
-		PreparedStatement ps = connection.prepareStatement("DELETE FROM ? WHERE userId=? AND challengeId=?");
-		ps.setString(1, InterestedChallenge.TBL_NAME);
-		ps.setLong(2, userId);
-		ps.setLong(3, challengeId);
+		PreparedStatement ps = connection.prepareStatement("DELETE FROM " + InterestedChallenge.TBL_NAME + " WHERE userId=? AND challengeId=?");
+		ps.setLong(1, userId);
+		ps.setLong(2, challengeId);
 		
 		int interestDeleted = ps.executeUpdate();
 		assert (interestDeleted == 0 || interestDeleted == 1);
@@ -414,10 +411,9 @@ public class User
 	public static boolean checkCompletion (Long userId, Long challengeId)
 	throws SQLException
 	{
-		PreparedStatement ps = connection.prepareStatement("SELECT * FROM ? WHERE userId=? AND challengeId=?");
-		ps.setString(1, CompletedChallenge.TBL_NAME);
-		ps.setLong(2, userId);
-		ps.setLong(3, challengeId);
+		PreparedStatement ps = connection.prepareStatement("SELECT * FROM " + CompletedChallenge.TBL_NAME + " WHERE userId=? AND challengeId=?");
+		ps.setLong(1, userId);
+		ps.setLong(2, challengeId);
 		
 		ResultSet rs = ps.executeQuery();
 		return rs.next();
@@ -431,10 +427,9 @@ public class User
 			return false;
 		}
 		
-		PreparedStatement ps = connection.prepareStatement("INSERT INTO ? (userId, challengeId) VALUES (?, ?)");
-		ps.setString(1, CompletedChallenge.TBL_NAME);
-		ps.setLong(2, userId);
-		ps.setLong(3, challengeId);
+		PreparedStatement ps = connection.prepareStatement("INSERT INTO " + CompletedChallenge.TBL_NAME + " (userId, challengeId) VALUES (?, ?)");
+		ps.setLong(1, userId);
+		ps.setLong(2, challengeId);
 		
 		int markedComplete = ps.executeUpdate();
 		assert (markedComplete == 0 || markedComplete == 1);
@@ -449,10 +444,9 @@ public class User
 			return false;
 		}
 		
-		PreparedStatement ps = connection.prepareStatement("DELETE FROM ? WHERE userId=? AND challengeId=?");
-		ps.setString(1, CompletedChallenge.TBL_NAME);
-		ps.setLong(2, userId);
-		ps.setLong(3, challengeId);
+		PreparedStatement ps = connection.prepareStatement("DELETE FROM " + CompletedChallenge.TBL_NAME + " WHERE userId=? AND challengeId=?");
+		ps.setLong(1, userId);
+		ps.setLong(2, challengeId);
 		
 		int markedIncomplete = ps.executeUpdate();
 		assert (markedIncomplete == 0 || markedIncomplete == 1);
@@ -461,10 +455,9 @@ public class User
 	public static boolean validation(String username, String password)
 	throws SQLException
 	{
-		PreparedStatement ps = connection.prepareStatement("SELECT * FROM ? WHERE username=? AND password=?");
-		ps.setString(1, CompletedChallenge.TBL_NAME);
-		ps.setString(2, username);
-		ps.setString(3, password);
+		PreparedStatement ps = connection.prepareStatement("SELECT * FROM " + CompletedChallenge.TBL_NAME + " WHERE username=? AND password=?");
+		ps.setString(1, username);
+		ps.setString(2, password);
 		
 		ResultSet rs = ps.executeQuery();
 		return rs.next();
@@ -472,9 +465,8 @@ public class User
 	public static boolean validateUsernam(String username)
 	throws SQLException
 	{
-		PreparedStatement ps = connection.prepareStatement("SELECT * FROM ? WHERE username=? ");
-		ps.setString(1, CompletedChallenge.TBL_NAME);
-		ps.setString(2, username);
+		PreparedStatement ps = connection.prepareStatement("SELECT * FROM " + CompletedChallenge.TBL_NAME + " WHERE username=? ");
+		ps.setString(1, username);
 		
 		ResultSet rs = ps.executeQuery();
 		return rs.next();
