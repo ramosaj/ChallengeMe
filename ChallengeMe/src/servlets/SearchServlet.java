@@ -2,7 +2,6 @@ package servlets;
 
 import java.io.IOException;
 import java.sql.SQLException;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.Callable;
 import java.util.concurrent.ExecutionException;
@@ -13,6 +12,8 @@ import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+
+import com.google.gson.Gson;
 
 import db.Challenge;
 import db.User;
@@ -72,7 +73,7 @@ public class SearchServlet extends HttpServlet {
 		String sendUsers = gson.toJson(this.displayUser);
 		String sendChallenge = gson.toJson(this.displayChallenge);
 		request.setAttribute("userResult", sendUsers);
-		request.setAttribute("challengeResult", sendChallenges);
+		request.setAttribute("challengeResult", sendChallenge);
 		response.sendRedirect("result.jsp");
 	}
 
