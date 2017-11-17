@@ -11,10 +11,10 @@
 		var user = new XMLHttpRequest();
 		user.open("GET",'/challenges/'+<%=request.getSession().getAttribute("userId")%>+'/interested',false);
 		var userResponse = JSON.parse(user.responseText);
-		String html ="";
+		var html ="";
 		for(var i =0; i< userResponse.size();i++)
 			{
-				String name = userResponse.get(i).getName();
+				var name = userResponse.get(i).getName();
 				html+="<tr><th>" + name + "</th></tr>";
 			}
 		document.getElementById("usersInterested").innerHTML = name;
@@ -28,7 +28,7 @@
 			
 		}
 		document.getElementById("posted").innerHTML = challengeHTML;
-		
+	}
 		function showUsersInterested()
 		 	{
 		 		document.getElementById("usersInterested").hidden=false;
@@ -40,7 +40,7 @@
 		 		document.getElementById("usersInterested").hidden=true;
 		 		document.getElementById("usersCompleted").hidden=false;		
 		 	}
-}
+
 </script>
 </head>
 <body onload="loadUsers()">

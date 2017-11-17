@@ -29,7 +29,7 @@
         		{
         			return false;
         		}
-        		var requeststr = "WHATEVER?";
+        		var requeststr = "SignupServlet?";
         		requeststr += "username=" + username;
         		requeststr += "&password=" + password;
         		
@@ -65,7 +65,7 @@
         		
         		
         		
-        		var requeststr = "WHATEVER?";
+        		var requeststr = "SignupServlet?";
         		requeststr += "fname=" + fname;
         		requeststr += "&lname=" + lname;
         		requeststr += "&username=" + username;

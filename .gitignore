@@ -30,4 +30,5 @@ hs_err_pid*
 .settings/org.eclipse.wst.ws.service.policy.prefs
 WebContent/WEB-INF/
 .recommenders/
+*.DS_Store
 ChallengeMe/.classpath

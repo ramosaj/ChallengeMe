@@ -32,7 +32,7 @@ public class SignupServlet extends HttpServlet {
 		String password = request.getParameter("password");
 		boolean exist = false;
 		try {
-			exist = User.validateUsernam(username);
+			exist = User.validateUsername(username);
 		} catch (SQLException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -43,7 +43,7 @@ public class SignupServlet extends HttpServlet {
 		}
 		else {
 			try {
-				User.add(username, password, fname + lname, "", "");
+				User.add(username, password, email, fname + lname, "", "");
 			} catch (SQLException e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();

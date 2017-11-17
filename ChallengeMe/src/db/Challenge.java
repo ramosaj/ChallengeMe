@@ -192,12 +192,26 @@ public class Challenge
 	public static Challenge get (Long id)
 	throws SQLException
 	{
-		PreparedStatement ps = connection.prepareStatement("SELECT * FROM ? WHERE id=?");
-		ps.setString(1, TBL_NAME);
-		ps.setLong(2, id);
+		PreparedStatement ps = connection.prepareStatement("SELECT * FROM " + TBL_NAME + " WHERE challengeId=?");
+		ps.setLong(1, id);
 		
 		ResultSet rs = ps.executeQuery();
+		rs.next();
 		return Challenge.getFromResultSet(rs, LAZY_LOAD);
+	}
+	
+	public static List<Challenge> getAll ()
+	throws SQLException
+	{
+		PreparedStatement ps = connection.prepareStatement("SELECT * FROM " + TBL_NAME);
+		
+		ResultSet rs = ps.executeQuery();
+		List<Challenge> challenges = new ArrayList<>();
+		while (rs.next()) {
+			Challenge challenge = Challenge.getFromResultSet(rs, true);
+			challenges.add(challenge);
+		}
+		return challenges;
 	}
 	
 	/**
@@ -214,11 +228,10 @@ public class Challenge
 	{
 		Long userId = user.getId();
 		
-		PreparedStatement ps = connection.prepareStatement("INSERT INTO ? VALUES (?, ?, ?)", Statement.RETURN_GENERATED_KEYS);
-		ps.setString(1, TBL_NAME);
-		ps.setLong(2, userId);
-		ps.setString(3, title);
-		ps.setString(4, description);
+		PreparedStatement ps = connection.prepareStatement("INSERT INTO " + TBL_NAME + " VALUES (?, ?, ?)", Statement.RETURN_GENERATED_KEYS);
+		ps.setLong(1, userId);
+		ps.setString(2, title);
+		ps.setString(3, description);
 				
 		int challengeCreated = ps.executeUpdate();
 		assert (challengeCreated == 0 || challengeCreated == 1);
@@ -226,8 +239,9 @@ public class Challenge
 		if (challengeCreated == 0) {
 			throw new SQLException("Failed to create challenge.");
 		}
-		
-		Long challengeId = ps.getGeneratedKeys().getLong(1);
+		ResultSet rs = ps.getGeneratedKeys();
+		rs.next();
+		Long challengeId = rs.getLong(1);
 		return challengeId;
 	}
 	
@@ -245,11 +259,10 @@ public class Challenge
 	public static void update (Long challengeId, String title, String description)
 	throws SQLException
 	{
-		PreparedStatement ps = connection.prepareStatement("UPDATE ? SET title=?, description=? WHERE Challenge.challengeId=?");
-		ps.setString(1, TBL_NAME);
-		ps.setString(2, title);
-		ps.setString(3, description);
-		ps.setLong(4, challengeId);
+		PreparedStatement ps = connection.prepareStatement("UPDATE " + TBL_NAME + " SET title=?, description=? WHERE challengeId=?");
+		ps.setString(1, title);
+		ps.setString(2, description);
+		ps.setLong(3, challengeId);
 		
 		int challengesUpdated = ps.executeUpdate();
 		assert (challengesUpdated == 0 || challengesUpdated == 1);
@@ -264,9 +277,8 @@ public class Challenge
 	public static void replaceCategories (Long challengeId, List<String> categories)
 	throws SQLException
 	{
-		PreparedStatement ps = connection.prepareStatement("UPDATE ? SET categories=? WHERE Challenge.challengeId=?");
-		ps.setString(1, TBL_NAME);
-		ps.setString(2, String.join(", ", categories));
+		PreparedStatement ps = connection.prepareStatement("UPDATE " + TBL_NAME + " SET categories=? WHERE Challenge.challengeId=?");
+		ps.setString(1, String.join(", ", categories));
 		
 		int categoriesUpdated = ps.executeUpdate();
 		assert (categoriesUpdated == 0 || categoriesUpdated == 1);
@@ -283,7 +295,7 @@ public class Challenge
 	protected static Challenge getFromResultSet (ResultSet rs, boolean lazyLoad)
 	throws SQLException
 	{
-		Long id = rs.getLong("id");
+		Long id = rs.getLong("challengeId");
 		Long userId = rs.getLong("userId");
 		String title = rs.getString("title");
 		String description = rs.getString("description");
@@ -314,9 +326,8 @@ public class Challenge
 	public static List<User> getCompletedUsers (Long challengeId)
 	throws SQLException
 	{
-		PreparedStatement ps = connection.prepareStatement("SELECT * FROM ? WHERE challengeId=?");
-		ps.setString(1, CompletedChallenge.TBL_NAME);
-		ps.setLong(2, challengeId);
+		PreparedStatement ps = connection.prepareStatement("SELECT * FROM " + CompletedChallenge.TBL_NAME + " WHERE challengeId=?");
+		ps.setLong(1, challengeId);
 		
 		ResultSet rs = ps.executeQuery();
 		List<User> completedUsers = new ArrayList<>(); 
@@ -339,9 +350,8 @@ public class Challenge
 	public static List<User> getInterestedUsers (Long challengeId)
 	throws SQLException
 	{
-		PreparedStatement ps = connection.prepareStatement("SELECT * FROM ? WHERE challengeId=?");
-		ps.setString(1, InterestedChallenge.TBL_NAME);
-		ps.setLong(2, challengeId);
+		PreparedStatement ps = connection.prepareStatement("SELECT * FROM " + InterestedChallenge.TBL_NAME + " WHERE challengeId=?");
+		ps.setLong(1, challengeId);
 		
 		ResultSet rs = ps.executeQuery();
 		List<User> interestedUsers = new ArrayList<>(); 

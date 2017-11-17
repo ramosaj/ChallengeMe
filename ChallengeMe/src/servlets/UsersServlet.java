@@ -1,16 +1,14 @@
 package servlets;
 
 import db.User;
+import db.User.UserNotFoundException;
 import db.Challenge;
-import db.Database;
 
 import util.Serializer;
 
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.PrintWriter;
-import java.nio.file.Path;
-import java.sql.Connection;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -38,7 +36,6 @@ import com.google.gson.JsonParser;
 public class UsersServlet extends HttpServlet
 {
 	private static final long serialVersionUID = 1L;
-	private static final Connection dbConnection = null; // Database.getConnection(true);
 		
 	private static final Set<String> validQueryables = new HashSet<String>(Arrays.asList(new String[] {"interested", "completed", "challenges"}));
 	
@@ -86,49 +83,54 @@ public class UsersServlet extends HttpServlet
 			return;
 		}
 		
-		// GET /users/:username
-		if (extractor.toBeQueried == null) {
-			getUser(extractor.username, request, response);
-		}
-		else if (extractor.toBeQueried.equals("interested")) {
-			// GET /users/:username/interested
-			if (extractor.ownername == null && extractor.challengeId == null) {
-				listInterestedChallenges(extractor.username, request, response);
+		try {
+			// GET /users/:username
+			if (extractor.toBeQueried == null) {
+				getUser(extractor.username, request, response);
 			}
-			// GET /users/:username/interested/:owner/:challenge
-			else if (extractor.ownername != null && extractor.challengeId != null) {
-				checkInterest(extractor.username, extractor.ownername, extractor.challengeId, request, response);
+			else if (extractor.toBeQueried.equals("interested")) {
+				// GET /users/:username/interested
+				if (extractor.ownername == null && extractor.challengeId == null) {
+					listInterestedChallenges(extractor.username, request, response);
+				}
+				// GET /users/:username/interested/:owner/:challenge
+				else if (extractor.ownername != null && extractor.challengeId != null) {
+					checkInterest(extractor.username, extractor.ownername, extractor.challengeId, request, response);
+				}
+				// invalid 
+				else {
+					response.sendError(HttpServletResponse.SC_BAD_REQUEST);
+				}
 			}
-			// invalid 
+			else if (extractor.toBeQueried.equals("completed")) {
+				// GET /users/:username/completed
+				if (extractor.ownername == null && extractor.challengeId == null) {
+					listCompletedChallenges(extractor.username, request, response);
+				}
+				// GET /users/:username/completed/:owner/:challenge
+				else if (extractor.ownername != null && extractor.challengeId != null) {
+					checkCompletion(extractor.username, extractor.ownername, extractor.challengeId, request, response);
+				}
+				// invalid 
+				else {
+					response.sendError(HttpServletResponse.SC_BAD_REQUEST);
+				}
+			}
+			else if (extractor.toBeQueried.equals("challenges")) {
+				// GET /users/:username/challenges
+				if (extractor.ownername == null && extractor.challengeId == null) {
+					listChallenges(extractor.username, request, response);
+				}
+				// invalid
+				else {
+					response.sendError(HttpServletResponse.SC_BAD_REQUEST);
+				}
+			}
 			else {
 				response.sendError(HttpServletResponse.SC_BAD_REQUEST);
 			}
 		}
-		else if (extractor.toBeQueried.equals("completed")) {
-			// GET /users/:username/completed
-			if (extractor.ownername == null && extractor.challengeId == null) {
-				listCompletedChallenges(extractor.username, request, response);
-			}
-			// GET /users/:username/completed/:owner/:challenge
-			else if (extractor.ownername != null && extractor.challengeId != null) {
-				checkCompletion(extractor.username, extractor.ownername, extractor.challengeId, request, response);
-			}
-			// invalid 
-			else {
-				response.sendError(HttpServletResponse.SC_BAD_REQUEST);
-			}
-		}
-		else if (extractor.toBeQueried.equals("challenges")) {
-			// GET /users/:username/challenges
-			if (extractor.ownername == null && extractor.challengeId == null) {
-				listChallenges(extractor.username, request, response);
-			}
-			// invalid
-			else {
-				response.sendError(HttpServletResponse.SC_BAD_REQUEST);
-			}
-		}
-		else {
+		catch (UserNotFoundException unfe) {
 			response.sendError(HttpServletResponse.SC_BAD_REQUEST);
 		}
 	}
@@ -140,16 +142,84 @@ public class UsersServlet extends HttpServlet
 		String pathInfo = request.getPathInfo();
 		PathExtractor extractor = new PathExtractor(pathInfo);
 		
-		// POST /users/:username/challenges
-		if (extractor.toBeQueried != null
-				&& extractor.toBeQueried.equals("challenges")
-				&& extractor.ownername == null
-				&& extractor.challengeId == null) {
-			createChallenge(extractor.username, request, response);
+		try {
+			// POST /users/:username/challenges
+			if (extractor.toBeQueried != null
+					&& extractor.toBeQueried.equals("challenges")
+					&& extractor.ownername == null
+					&& extractor.challengeId == null) {
+				createChallenge(extractor.username, request, response);
+			}
+			else {
+				response.sendError(HttpServletResponse.SC_BAD_REQUEST);
+			}
 		}
-		else {
+		catch (UserNotFoundException unfe) {
 			response.sendError(HttpServletResponse.SC_BAD_REQUEST);
 		}
+	}
+	
+	protected void doPut (HttpServletRequest request, HttpServletResponse response)
+	throws ServletException, IOException
+	{
+		// url mapping
+		String pathInfo = request.getPathInfo();
+		PathExtractor extractor = new PathExtractor(pathInfo);
+		
+		try {
+			// PUT /users/:username/interested/:owner/:challenge
+			if (extractor.toBeQueried != null
+					&& extractor.ownername != null
+					&& extractor.challengeId != null) {
+				if (extractor.toBeQueried.equals("interested")) {
+					presentInterest(extractor.username, extractor.ownername, extractor.challengeId, request, response);
+				}
+				else if (extractor.toBeQueried.equals("completed")) {
+					markAsComplete(extractor.username, extractor.ownername, extractor.challengeId, request, response);
+				}
+				else {
+					response.sendError(HttpServletResponse.SC_BAD_REQUEST);
+				}
+			}
+			else {
+				response.sendError(HttpServletResponse.SC_BAD_REQUEST);
+			}
+		}
+		catch (UserNotFoundException unfe) {
+			response.sendError(HttpServletResponse.SC_BAD_REQUEST);
+		}
+	}
+	
+	protected void doDelete (HttpServletRequest request, HttpServletResponse response)
+	throws ServletException, IOException
+	{
+		// url mapping
+		String pathInfo = request.getPathInfo();
+		PathExtractor extractor = new PathExtractor(pathInfo);
+		
+		try {
+			// DELETE /users/:username/interested/:owner/:challenge
+			if (extractor.toBeQueried != null
+					&& extractor.ownername != null
+					&& extractor.challengeId != null) {
+				if (extractor.toBeQueried.equals("interested")) {
+					deleteInterest(extractor.username, extractor.ownername, extractor.challengeId, request, response);
+				}
+				else if (extractor.toBeQueried.equals("completed")) {
+					markAsIncomplete(extractor.username, extractor.ownername, extractor.challengeId, request, response);
+				}
+				else {
+					response.sendError(HttpServletResponse.SC_BAD_REQUEST);
+				}
+			}
+			else {
+				response.sendError(HttpServletResponse.SC_BAD_REQUEST);
+			}
+		}
+		catch (UserNotFoundException unfe) {
+			response.sendError(HttpServletResponse.SC_BAD_REQUEST);
+		}
+
 	}
 	
 	/**
@@ -164,7 +234,7 @@ public class UsersServlet extends HttpServlet
 	 * @throws IOException
 	 */
 	protected void getUser (String username, HttpServletRequest request, HttpServletResponse response)
-	throws ServletException, IOException
+	throws ServletException, IOException, UserNotFoundException
 	{
 		JsonElement payload = null;
 		try {
@@ -193,7 +263,7 @@ public class UsersServlet extends HttpServlet
 	 * @throws IOException
 	 */
 	protected void listInterestedChallenges (String username, HttpServletRequest request, HttpServletResponse response)
-	throws ServletException, IOException
+	throws ServletException, IOException, UserNotFoundException
 	{
 		Integer limit = Integer.parseInt(request.getParameter("limit"));
 		String sort = request.getParameter("sort");
@@ -236,13 +306,67 @@ public class UsersServlet extends HttpServlet
 	 * @throws IOException
 	 */
 	protected void checkInterest (String username, String ownername, Long challengeId, HttpServletRequest request, HttpServletResponse response)
-	throws ServletException, IOException
+	throws ServletException, IOException, UserNotFoundException
 	{
 		try {
 			User user = User.get(username);
 			boolean interested = User.checkInterest(user.getId(), challengeId);
 			
 			response.setStatus((interested) ? HttpServletResponse.SC_NO_CONTENT : HttpServletResponse.SC_NOT_FOUND);
+		}
+		catch (SQLException sqle) {
+			sqle.printStackTrace();
+		}
+	}
+	
+	/**
+	 * PUT /users/:username/interested/:owner/:challenge
+	 * 
+	 * Present interest in a challenge.
+	 * 
+	 * NOTE: `Content-Length` has to be set to zero when calling out to this endpoint.
+	 * @param username
+	 * @param ownername
+	 * @param challengeId
+	 * @param request
+	 * @param response
+	 * @throws ServletException
+	 * @throws IOException
+	 */
+	protected void presentInterest (String username, String ownername, Long challengeId, HttpServletRequest request, HttpServletResponse response)
+	throws ServletException, IOException, UserNotFoundException
+	{
+		try {
+			User.presentInterest(User.get(username).getId(), challengeId);
+			
+			response.setStatus(HttpServletResponse.SC_NO_CONTENT);
+			response.setContentLength(0);
+		}
+		catch (SQLException sqle) {
+			sqle.printStackTrace();
+		}
+	}
+	
+	/**
+	 * DELETE /users/:username/interested/:owner/:challenge
+	 * 
+	 * Delete interest in a challenge.
+	 * @param username
+	 * @param ownername
+	 * @param challengeId
+	 * @param request
+	 * @param response
+	 * @throws ServletException
+	 * @throws IOException
+	 * @throws UserNotFoundException
+	 */
+	protected void deleteInterest (String username, String ownername, Long challengeId, HttpServletRequest request, HttpServletResponse response)
+	throws ServletException, IOException, UserNotFoundException
+	{
+		try {
+			User.deleteInterest(User.get(username).getId(), challengeId);
+			
+			response.setStatus(HttpServletResponse.SC_NO_CONTENT);
 		}
 		catch (SQLException sqle) {
 			sqle.printStackTrace();
@@ -261,7 +385,7 @@ public class UsersServlet extends HttpServlet
 	 * @throws IOException
 	 */
 	protected void listCompletedChallenges (String username, HttpServletRequest request, HttpServletResponse response)
-	throws ServletException, IOException
+	throws ServletException, IOException, UserNotFoundException
 	{
 		Integer limit = Integer.parseInt(request.getParameter("limit"));
 		String sort = request.getParameter("sort");
@@ -304,13 +428,67 @@ public class UsersServlet extends HttpServlet
 	 * @throws IOException
 	 */
 	protected void checkCompletion (String username, String ownername, Long challengeId, HttpServletRequest request, HttpServletResponse response)
-	throws ServletException, IOException
+	throws ServletException, IOException, UserNotFoundException
 	{
 		try {
 			User user = User.get(username);
 			boolean interested = User.checkCompletion(user.getId(), challengeId);
 			
 			response.setStatus((interested) ? HttpServletResponse.SC_NO_CONTENT : HttpServletResponse.SC_NOT_FOUND);
+		}
+		catch (SQLException sqle) {
+			sqle.printStackTrace();
+		}
+	}
+	
+	/**
+	 * PUT /users/:username/completed/:owner/:challenge
+	 * 
+	 * Mark a challenge completed.
+	 * 
+	 * @param username
+	 * @param ownername
+	 * @param challengeId
+	 * @param request
+	 * @param response
+	 * @throws ServletException
+	 * @throws IOException
+	 */
+	protected void markAsComplete (String username, String ownername, Long challengeId, HttpServletRequest request, HttpServletResponse response)
+	throws ServletException, IOException, UserNotFoundException
+	{
+		try {
+			User.markAsComplete(User.get(username).getId(), challengeId);
+			
+			response.setStatus(HttpServletResponse.SC_NO_CONTENT);
+			response.setContentLength(0);
+		}
+		catch (SQLException sqle) {
+			sqle.printStackTrace();
+		}
+	}
+	
+	/**
+	 * DELETE /users/:username/completed/:owner/:challenge
+	 * 
+	 * Mark a challenge as incomplete.
+	 * 
+	 * @param username
+	 * @param ownername
+	 * @param challengeId
+	 * @param request
+	 * @param response
+	 * @throws ServletException
+	 * @throws IOException
+	 * @throws UserNotFoundException
+	 */
+	protected void markAsIncomplete (String username, String ownername, Long challengeId, HttpServletRequest request, HttpServletResponse response)
+	throws ServletException, IOException, UserNotFoundException
+	{
+		try {
+			User.markAsIncomplete(User.get(username).getId(), challengeId);
+			
+			response.setStatus(HttpServletResponse.SC_NO_CONTENT);
 		}
 		catch (SQLException sqle) {
 			sqle.printStackTrace();
@@ -329,7 +507,7 @@ public class UsersServlet extends HttpServlet
 	 * @throws IOException
 	 */
 	protected void listChallenges (String username, HttpServletRequest request, HttpServletResponse response)
-	throws ServletException, IOException
+	throws ServletException, IOException, UserNotFoundException
 	{
 		Integer limit = Integer.parseInt(request.getParameter("limit"));
 		String sort = request.getParameter("sort");
@@ -359,9 +537,9 @@ public class UsersServlet extends HttpServlet
 	}
 	
 	/**
-	 * Create a challenge.
+	 * POST /users/:username/challenges
 	 * 
-	 * POST /usrs/:username/challenges
+	 * Create a challenge.
 	 * 
 	 * @param username
 	 * @param request
@@ -370,7 +548,7 @@ public class UsersServlet extends HttpServlet
 	 * @throws IOException
 	 */
 	protected void createChallenge (String username, HttpServletRequest request, HttpServletResponse response)
-	throws ServletException, IOException
+	throws ServletException, IOException, UserNotFoundException
 	{
 		// get request body
 		BufferedReader br = request.getReader();
@@ -389,6 +567,7 @@ public class UsersServlet extends HttpServlet
 		JsonElement createdChallengeJSON = new JsonObject();
 		try {
 			User user = User.get(username);
+			// TODO: check if the user is the current session user
 			Challenge challenge = new Challenge(user, title, description, categories);
 			createdChallengeJSON = Serializer.getChallengeJSON(challenge, false);
 		}
