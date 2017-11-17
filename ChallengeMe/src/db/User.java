@@ -348,6 +348,25 @@ public class User
 		assert (usersUpdated == 0 || usersUpdated == 1);
 	}
 	
+	
+	/**
+	 * Get all the users from the database
+	 * 
+	 * @return
+	 * @throws SQLException
+	 */
+	public static List<User> getAll() 
+	throws SQLException
+	{
+		PreparedStatement ps = connection.prepareStatement("SELECT * FROM " + TBL_NAME);
+		ResultSet rs = ps.executeQuery();
+		List<User> users = new ArrayList<>();
+		while(rs.next()) {
+			users.add(User.getFromResultSet(rs, User.LAZY_LOAD));
+		}
+		return users;
+	}
+	
 	private static List<Challenge> getChallenges (Long userId)
 	throws SQLException
 	{
