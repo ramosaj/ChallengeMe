@@ -7,48 +7,95 @@
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
 <title>Challenge Page</title>
 <script>
+
+	window.onload = function() {
+		loadUsers();
+		getChallenge();
+		
+	}
 	function loadUsers() {
 		var user = new XMLHttpRequest();
-		user.open("GET",'/challenges/'+<%=request.getSession().getAttribute("userId")%>+'/interested',false);
+		var username = <%=request.getParameter("username") %>;	
+		var challengeId = <%=request.getParameter("challengeId") %>;
+		user.open("GET",'ChallengeMe/challenges/'+username+'/'+challengeId+'/interested',false);
+		user.send();
+		alert(user.responseText)
 		var userResponse = JSON.parse(user.responseText);
 		var html ="";
 		for(var i =0; i< userResponse.size();i++)
 			{
-				var name = userResponse.get(i).getName();
+				var name = userResponse.get(i).name;
 				html+="<tr><th>" + name + "</th></tr>";
 			}
-		document.getElementById("usersInterested").innerHTML = name;
+		document.getElementById("usersInterested").innerHTML = html;
 		
-		var userChallenges = new XHMLHttpRequest();
-		userChallenges.open("GET",userResponse.challengesUrl,false);
-		var challengeList = JSON.parse(userChallenges.responseText);
-		var challengeHTML = ""
-		for(var element in challengeList){
-			challengeHTML=challengeHTML +  "<a href="+element.url+">"+element.name+"</a><br />";
-			
+		user = new XMLHttpRequest();
+		user.open("GET",'ChallengeMe/challenges/'+username+'/'+challengeId+'/completed',false);
+		user.send();
+		var resp = JSON.parse(user.responseText);
+		html="";
+		for(var i=0;i<resp.length;i++){
+			var name = resp[i].name;
+			html+="<tr><th><a onclick='redirect("+resp[i].url+")'>" + name + "</a></th></tr>";
 		}
-		document.getElementById("posted").innerHTML = challengeHTML;
+		document.getElementById("usersCompleted").innerHTML = html;
+		
+		
+		
 	}
-		function showUsersInterested()
-		 	{
+		function showUsersInterested() {
 		 		document.getElementById("usersInterested").hidden=false;
 		 		document.getElementById("usersCompleted").hidden=true;
-		 	}
+		 }
 		 	
-		 	function showUsersCompleted()
-		 	{
+		 function showUsersCompleted() {
 		 		document.getElementById("usersInterested").hidden=true;
 		 		document.getElementById("usersCompleted").hidden=false;		
-		 	}
+		 }
+	
+		 
+	function getChallenge() {
+		var username = <%=request.getParameter("username") %>;
+		var challengeId = <%= request.getParameter("challengeId") %>;
+		var challenge = new XMLHttpRequest();
+		challenge.open("GET","ChallengeMe/challenges/"+username+"/"+challengeId,false);
+		challenge.send();
+		var resp = JSON.parse(challenge.responseText);
+		document.getElementById("title").innerHTML = "<h4>" +  resp.name + "</h4>";
+		document.getElementById("name").innerHTML = resp.owner.username;
+		document.getElemenyById("date").innerHTML = resp.createdAt;
+		
+	}
+	
+	function redirect() {
+		var urlpattern = url.split("/");
+  		var username = urlpattern[1];
+  		window.location.href="Profile.jsp?username="+username;	
+  		
+		
+		
+		
+		
+	}
 
 </script>
 </head>
 <body onload="loadUsers()">
 	<br>
-	<div style="text-align: center;"><span><h4>TOMMY TROJAN</h4></span><span>5 MINS AGO</span><span>&#9734 INTERESTED</span></div>
-	<div style="text-align: center;"><h1>REALLY CREATIVE CHALLENGE</h1></div>
-	<div style="text-align: center;"> <span ="tag">CREATIVE</span><span="tag">INTERESTING</span></div>	
-	<div style="text-align: center;"><span>	&#9733 99 interested &nbsp; &nbsp;</span><span>&#9863 7 viewing</span></div>
+	<div style="text-align: center;">
+		<span id="name">
+			<h4>TOMMY TROJAN</h4>
+		</span>
+		<span id="date">
+			5 MINS AGO
+		</span>
+		<span>
+			<br />
+			<button type="button" class="btn btn-secondary">Interested</button>
+		</span>
+	</div>
+	<div id="title" style="text-align: center;"><h1>REALLY CREATIVE CHALLENGE</h1></div>
+	<div id="categories" style="text-align: center;"> <span ="tag"><a class="btn btn-primary">CREATIVE</a>&nbsp;</span><span="tag"><a class="btn btn-primary">INTERESTING</a></span></div>	
 <hr>
 	<div style="text-align:center;"><span align="center"><button onclick="showUsersInterested()" type="button">Users Interested</button></span><button onclick="showUsersCompleted()" type="button">Users Completed</button><span align="center"></span></div>
 	
