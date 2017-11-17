@@ -6,108 +6,61 @@
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
 <title>Challenge Page</title>
+<script src="./js/challenge.js" type="text/javascript"></script>
+<style>
+.challenge-tag {
+  padding: 4px;
+  font-size: 14px;
+}
+
+.fa-check, .fa-star, .fa-times {
+  font-size: 20px;
+}
+</style>
 <script>
-
+	var currentUsername = "tony";
+	
+	var url = new URL(window.location.href);
+	var username = url.searchParams.get("username");
+	var challengeId = url.searchParams.get("challengeId");
+	
 	window.onload = function() {
-		loadUsers();
-		getChallenge();
-		
+		loadInterest(currentUsername, username, challengeId);
+		// loadChallenge(username, challengeId);
+		loadInterestedUsers(username, challengeId);
+		loadCompletedUsers(username, challengeId);
 	}
-	function loadUsers() {
-		var user = new XMLHttpRequest();
-		var username = <%=request.getParameter("username") %>;	
-		var challengeId = <%=request.getParameter("challengeId") %>;
-		user.open("GET",'ChallengeMe/challenges/'+username+'/'+challengeId+'/interested',false);
-		user.send();
-		alert(user.responseText)
-		var userResponse = JSON.parse(user.responseText);
-		var html ="";
-		for(var i =0; i< userResponse.size();i++)
-			{
-				var name = userResponse.get(i).name;
-				html+="<tr><th>" + name + "</th></tr>";
-			}
-		document.getElementById("usersInterested").innerHTML = html;
-		
-		user = new XMLHttpRequest();
-		user.open("GET",'ChallengeMe/challenges/'+username+'/'+challengeId+'/completed',false);
-		user.send();
-		var resp = JSON.parse(user.responseText);
-		html="";
-		for(var i=0;i<resp.length;i++){
-			var name = resp[i].name;
-			html+="<tr><th><a onclick='redirect("+resp[i].url+")'>" + name + "</a></th></tr>";
-		}
-		document.getElementById("usersCompleted").innerHTML = html;
-		
-		
-		
-	}
-		function showUsersInterested() {
-		 		document.getElementById("usersInterested").hidden=false;
-		 		document.getElementById("usersCompleted").hidden=true;
-		 }
-		 	
-		 function showUsersCompleted() {
-		 		document.getElementById("usersInterested").hidden=true;
-		 		document.getElementById("usersCompleted").hidden=false;		
-		 }
-	
-		 
-	function getChallenge() {
-		var username = <%=request.getParameter("username") %>;
-		var challengeId = <%= request.getParameter("challengeId") %>;
-		var challenge = new XMLHttpRequest();
-		challenge.open("GET","ChallengeMe/challenges/"+username+"/"+challengeId,false);
-		challenge.send();
-		var resp = JSON.parse(challenge.responseText);
-		document.getElementById("title").innerHTML = "<h4>" +  resp.name + "</h4>";
-		document.getElementById("name").innerHTML = resp.owner.username;
-		document.getElemenyById("date").innerHTML = resp.createdAt;
-		
-	}
-	
-	function redirect() {
-		var urlpattern = url.split("/");
-  		var username = urlpattern[1];
-  		window.location.href="Profile.jsp?username="+username;	
-  		
-		
-		
-		
-		
-	}
-
 </script>
 </head>
-<body onload="loadUsers()">
-	<br>
-	<div style="text-align: center;">
-		<span id="name">
-			<h4>TOMMY TROJAN</h4>
-		</span>
-		<span id="date">
-			5 MINS AGO
-		</span>
-		<span>
-			<br />
-			<button type="button" class="btn btn-secondary">Interested</button>
-		</span>
+<body>
+  <div class="text-center">
+    <span id="username">
+      <h4><span id="username-value"></span></h4>
+    </span>
+    <span id="date">
+      <span id="date-value"></span>
+    </span>
+    <span>
+      <br />
+      <button type="button" id="interested-btn" class="btn btn-secondary">
+        <i id="interested-btn-icon" class="fa"></i> Interested
+      </button>
+    </span>
+    <div id="title" class="text-center">
+      <h1><span id="title-value"></span></h1>
 	</div>
-	<div id="title" style="text-align: center;"><h1>REALLY CREATIVE CHALLENGE</h1></div>
-	<div id="categories" style="text-align: center;"> <span ="tag"><a class="btn btn-primary">CREATIVE</a>&nbsp;</span><span="tag"><a class="btn btn-primary">INTERESTING</a></span></div>	
-<hr>
-	<div style="text-align:center;"><span align="center"><button onclick="showUsersInterested()" type="button">Users Interested</button></span><button onclick="showUsersCompleted()" type="button">Users Completed</button><span align="center"></span></div>
-	
-	<table align="center" id="usersInterested">
-		<tr><th>Donald Trump -- 10/20/2017</th></tr>
-		<tr><th>Sachet Vijay -- 10/13/2017</th></tr>
-		<tr><th>Barack Obama -- 10/10/2017</th></tr>
-	</table>
-	<table hidden align="center" id="usersCompleted">
-		<tr><th>Hillary Clinton -- 10/28/2017</th></tr>
-		<tr><th>Eddo Hintoso -- 10/15/2017</th></tr>
-		<tr><th>Owen Gong -- 10/13/2017</th></tr>
-	</table>
-	</body>
+    <div id="categories" class="text-center"></div>	
+  </div>
+  <hr />
+  <div class="container">
+    <div class="row">
+      <div class="col text-center" id="interested-users">
+        <h4>Interested Users (<span id="interested-users-count"></span>)</h4>
+      </div>
+      <div class="col text-center" id="completed-users">
+        <h4>Completed Users (<span id="completed-users-count"></span>)</h4>
+      </div>
+    </div>
+  </div>
+</body>
 </html>
