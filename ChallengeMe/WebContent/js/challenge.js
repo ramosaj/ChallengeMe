@@ -1,6 +1,3 @@
-var INTERESTED_BTN_ID = "interested-btn";
-var INTERESTED_BTN_ICON_ID = "interested-btn-icon";
-
 function getUserUrl (username)
 {
 	return "/ChallengeMe/users/" + username;
@@ -30,28 +27,28 @@ function loadChallenge (username, challengeId)
 	getChallengeRequest.onload = function () {
 		if (getChallengeRequest.readyState === 4) {
             if (getChallengeRequest.status === 200) {
-            		var challenge = JSON.parse(getChallengeRequest.responseText);
-        			
-            		document.getElementById("title-value").innerHTML = challenge.name;
-            		document.getElementById("username-value").innerHTML = challenge.owner.username;
-            		document.getElementById("date-value").innerHTML = challenge.createdAt;
-            		
-            		// XXX: populate categories
-            		challenge.categories = ["creative", "interesting"];
-            		for (var category of challenge.categories) {
-            			var categoryTag = document.createElement("span")
-            			categoryTag.classList.add("challenge-tag");
-            			categoryTag.classList.add("btn");
-            			categoryTag.classList.add("btn-info");
-            			categoryTag.classList.add("disabled");
-            			categoryTag.innerHTML = "# " + category
-            			// add a space between tags
-            			var space = document.createElement("span");
-            			space.innerHTML = "&nbsp;";
-            			// render elements
-            			document.getElementById("categories").appendChild(categoryTag);
-            			document.getElementById("categories").appendChild(space);
-            		}
+        		var challenge = JSON.parse(getChallengeRequest.responseText);
+    			
+        		document.getElementById("title-value").innerHTML = challenge.name;
+        		document.getElementById("username-value").innerHTML = challenge.owner.username;
+        		document.getElementById("date-value").innerHTML = challenge.createdAt;
+        		
+        		// XXX: populate categories
+        		challenge.categories = ["creative", "interesting"];
+        		for (var category of challenge.categories) {
+        			var categoryTag = document.createElement("span")
+        			categoryTag.classList.add("challenge-tag");
+        			categoryTag.classList.add("btn");
+        			categoryTag.classList.add("btn-info");
+        			categoryTag.classList.add("disabled");
+        			categoryTag.innerHTML = "# " + category
+        			// add a space between tags
+        			var space = document.createElement("span");
+        			space.innerHTML = "&nbsp;";
+        			// render elements
+        			document.getElementById("categories").appendChild(categoryTag);
+        			document.getElementById("categories").appendChild(space);
+        		}
             }
             else {
                 console.error(getChallengeRequest.statusText);
@@ -63,138 +60,6 @@ function loadChallenge (username, challengeId)
 	  console.error(getChallengeRequest.statusText);
 	};
 	getChallengeRequest.send(null);
-}
-
-function checkInterestUrl (checker, username, challengeId)
-{
-	return "/ChallengeMe/users/" + checker + "/interested/" + username + "/" + challengeId;
-}
-
-function loadInterest (checker, username, challengeId)
-{
-	var checkInterestRequest = new XMLHttpRequest();
-	var url = checkInterestUrl(checker, username, challengeId);
-	checkInterestRequest.open("GET", url, true);
-	
-	// star or checkmark depending on whether the checker is already interested or not
-	var interestedButtonIconEl = document.getElementById(INTERESTED_BTN_ICON_ID);
-	
-	checkInterestRequest.onload = function () {
-		if (checkInterestRequest.readyState === 4) {
-            if (checkInterestRequest.status === 204) {
-            	// checker is already interested, display checkmark
-            	markInterestedButton();
-            }
-            else if (checkInterestRequest.status == 404) {
-            	// checker is not interested, display star
-            	markUninterestedButton();
-            }
-            else {
-                console.error(checkInterestRequest.statusText);
-            }
-        }
-	}
-	
-	checkInterestRequest.onerror = function (e) {
-	  console.error(checkInterestRequest.statusText);
-	};
-	checkInterestRequest.send(null);
-}
-
-function markInterestedButton ()
-{
-	var interestedButtonIconEl = document.getElementById(INTERESTED_BTN_ICON_ID);
-	interestedButtonIconEl.classList.remove("fa-star");
-	interestedButtonIconEl.classList.add("fa-check");
-	
-	var interestedButtonEl = document.getElementById(INTERESTED_BTN_ID);
-	interestedButtonEl.classList.remove("btn-secondary");
-	interestedButtonEl.classList.add("btn-primary");
-	
-	interestedButtonEl.onclick = function () {
-		deleteInterest(currentUsername, username, challengeId);
-	}
-}
-
-function markUninterestedButton ()
-{
-	var interestedButtonIconEl = document.getElementById(INTERESTED_BTN_ICON_ID);
-	interestedButtonIconEl.classList.remove("fa-check");
-	interestedButtonIconEl.classList.add("fa-star");
-	
-	var interestedButtonEl = document.getElementById(INTERESTED_BTN_ID);
-	interestedButtonEl.classList.remove("btn-primary");
-	interestedButtonEl.classList.add("btn-secondary");
-		
-	interestedButtonEl.onclick = function () {
-		presentInterest(currentUsername, username, challengeId);
-	}
-}
-
-function presentInterest (username, owner, challengeId)
-{
-	console.log(username, owner, challengeId);
-	var presentInterestRequest = new XMLHttpRequest();
-	var url = checkInterestUrl(username, owner, challengeId);
-	presentInterestRequest.open("PUT", url, true);
-	
-	presentInterestRequest.onload = function () {
-		if (presentInterestRequest.readyState === 4) {
-            if (presentInterestRequest.status === 204) {
-            	markInterestedButton();
-            	// Add user to the interested users column
-            	var user = getUser(username);
-            	var userDiv = createUserDiv(user, "interested-user");
-    			document.getElementById("interested-users").appendChild(userDiv);
-            	// Increment count
-        		var interestedUsersCountEl = document.getElementById("interested-users-count");
-        		interestedUsersCountEl.dataset.value = parseInt(interestedUsersCountEl.dataset.value) + 1;
-        		interestedUsersCountEl.innerHTML = interestedUsersCountEl.dataset.value;
-            }
-            else {
-                console.error(checkInterestRequest.statusText);
-            }
-        }
-	}
-	
-	presentInterestRequest.onerror = function (e) {
-	  console.error(presentInterestRequest.statusText);
-	};
-	presentInterestRequest.send(null);
-}
-
-function deleteInterest (username, owner, challengeId)
-{
-	var deleteInterestRequest = new XMLHttpRequest();
-	var url = checkInterestUrl(username, owner, challengeId);
-	deleteInterestRequest.open("DELETE", url, true);
-	
-	deleteInterestRequest.onload = function () {
-		if (deleteInterestRequest.readyState === 4) {
-            if (deleteInterestRequest.status === 204) {
-            	markUninterestedButton();
-            	// Remove user from the interested users column
-            	for (var div of document.getElementsByClassName("interested-user")) {
-            		if (div.dataset.username == username) {
-            			div.parentElement.removeChild(div);
-            			break;
-            		}
-            	}
-            	// Decrement count
-        		var interestedUsersCountEl = document.getElementById("interested-users-count");
-        		interestedUsersCountEl.dataset.value = parseInt(interestedUsersCountEl.dataset.value) - 1;
-        		interestedUsersCountEl.innerHTML = interestedUsersCountEl.dataset.value;
-            }
-            else {
-                console.error(deleteInterestRequest.statusText);
-            }
-        }
-	}
-	
-	deleteInterestRequest.onerror = function (e) {
-	  console.error(deleteInterestRequest.statusText);
-	};
-	deleteInterestRequest.send(null);
 }
 
 function getInterestedUsersUrl (username, challengeId)

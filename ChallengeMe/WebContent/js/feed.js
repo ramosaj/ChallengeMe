@@ -33,6 +33,7 @@ function createChallengeDiv (challenge)
 	// <div class="row">
 	var rowDiv = document.createElement("div");
 	rowDiv.classList.add("row");
+	rowDiv.dataset.challengeId = challenge.id;
 	//   <div class="col-sm-12 well">
 	var colDiv = document.createElement("div");
 	colDiv.classList.add("col-sm-12");
@@ -40,10 +41,7 @@ function createChallengeDiv (challenge)
 	
 	// name
 	var nameLink = document.createElement("a");
-	nameLink.href = "#"; // TODO
-	nameLink.onclick = function () {
-		// TODO
-	}
+	nameLink.href = getChallengePageUrl(challenge.owner.username, challenge.id);
 	nameLink.innerHTML = challenge.name;
 	var nameHeaderLink = document.createElement("h2");
 	nameHeaderLink.appendChild(nameLink);
@@ -64,9 +62,16 @@ function createChallengeDiv (challenge)
 	// interested button
 	var interestedButton = document.createElement("button");
 	interestedButton.type = "button";
+	interestedButton.classList.add("interested-btn");
 	interestedButton.classList.add("btn");
-	interestedButton.classList.add("btn-primary");
-	interestedButton.innerHTML = "Interested";
+	interestedButton.classList.add("btn-secondary");
+	var interestedButtonIcon = document.createElement("i");
+	interestedButtonIcon.classList.add("interested-btn-icon");
+	interestedButtonIcon.classList.add("fa");
+	interestedButton.appendChild(interestedButtonIcon);
+	interestedButton.innerHTML += " Interested";
+	
+	loadInterest(username, challenge.owner.username, challenge.id, interestedButton, null, null);
 	
 	// add all attributes to colDiv
 	colDiv.appendChild(nameHeaderLink);

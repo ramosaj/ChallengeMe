@@ -6,6 +6,7 @@
 	<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
 	<title>Insert title here</title>
 	<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+	<script src="./js/util.js" type="text/javascript"></script>
 	<script src="./js/profile.js" type="text/javascript"></script>
 	<style>
 	.navbar {

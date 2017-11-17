@@ -6,6 +6,7 @@
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
 <title>Challenge Page</title>
+<script src="./js/userInterest.js" type="text/javascript"></script>
 <script src="./js/challenge.js" type="text/javascript"></script>
 <style>
 .challenge-tag {
@@ -26,7 +27,33 @@
 	var challengeId = url.searchParams.get("challengeId");
 	
 	window.onload = function() {
-		loadInterest(currentUsername, username, challengeId);
+		loadInterest(
+			currentUsername, username, challengeId,
+			document.getElementsByClassName(INTERESTED_BTN_CNAME)[0],
+			function () {
+				// Remove user from the interested users column
+            	for (var div of document.getElementsByClassName("interested-user")) {
+            		if (div.dataset.username == currentUsername) {
+            			div.parentElement.removeChild(div);
+            			break;
+            		}
+            	}
+            	// Decrement count
+        		var interestedUsersCountEl = document.getElementById("interested-users-count");
+        		interestedUsersCountEl.dataset.value = parseInt(interestedUsersCountEl.dataset.value) - 1;
+        		interestedUsersCountEl.innerHTML = interestedUsersCountEl.dataset.value;
+			},
+			function () {
+	        	// Add user to the interested users column
+	        	var user = getUser(currentUsername);
+	        	var userDiv = createUserDiv(user, "interested-user");
+				document.getElementById("interested-users").appendChild(userDiv);
+	        	// Increment count
+	    		var interestedUsersCountEl = document.getElementById("interested-users-count");
+	    		interestedUsersCountEl.dataset.value = parseInt(interestedUsersCountEl.dataset.value) + 1;
+	    		interestedUsersCountEl.innerHTML = interestedUsersCountEl.dataset.value;
+			}
+		);
 		loadChallenge(username, challengeId);
 		loadInterestedUsers(username, challengeId);
 		loadCompletedUsers(username, challengeId);
@@ -43,8 +70,8 @@
     </span>
     <span>
       <br />
-      <button type="button" id="interested-btn" class="btn btn-secondary">
-        <i id="interested-btn-icon" class="fa"></i> Interested
+      <button type="button" class="interested-btn btn btn-secondary">
+        <i class="interested-btn-icon fa"></i> Interested
       </button>
     </span>
     <div id="title" class="text-center">

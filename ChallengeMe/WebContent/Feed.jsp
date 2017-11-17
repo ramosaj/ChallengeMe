@@ -18,9 +18,17 @@
       color: white;
       padding: 15px;
     }
+    
+	.fa-check, .fa-star, .fa-times {
+	  font-size: 20px;
+	}
   </style>
+  <script src="./js/util.js" type="text/javascript"></script>
+  <script src="./js/userInterest.js" type="text/javascript"></script>
   <script src="./js/feed.js" type="text/javascript"></script>
   <script type="text/javascript">
+    // Current user
+	var username = "anthony"; // XXX
   	window.onload = getChallenges;
   	
   	function addPost() {
@@ -45,23 +53,6 @@
   		
   		
   	}
-  	
-  	function redirect(url) {
-  		var urlpattern = url.split("/");
-  		var username = urlpattern[1];
-  		var challengeId = urlpattern[2];
-  		window.location.href="Challenge.jsp?username="+username+"&challengeId="+challengeId;	
-  		
-  		
-  		
-  		
-  		
-  	}
-  
-  
-  
-  
-  
   </script>
 </head>
 
@@ -75,7 +66,7 @@
       <div class="row">
         <div class="col-sm-12 well">
           <h1>
-          	<b>UPLOAD A CHALLENGE</b>
+          	<b>CHALLENGE THE WORLD</b>
           </h1> 
           <form method=POST onsubmit="return addPost();">
             Title: <input type="text" class="form-control" id="title" placeholder="Enter Title">

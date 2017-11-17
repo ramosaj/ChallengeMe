@@ -23,11 +23,6 @@ function getDateString (ds)
 	return month + " " + day + ", " + year;
 }
 
-function getChallengePageUrl (username, challengeId)
-{
-	return "/ChallengeMe/Challenge.jsp?username=" + username + "&challengeId=" + challengeId;
-}
-
 function getProfileUrl (username)
 {
 	return "/ChallengeMe/users/" + username;
