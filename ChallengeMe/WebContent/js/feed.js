@@ -49,7 +49,12 @@ function createChallengeDiv (challenge)
 	nameHeaderLink.appendChild(nameLink);
 	// username
 	var usernameParagraph = document.createElement("p");
-	usernameParagraph.innerHTML = challenge.owner.username;
+	usernameParagraph.innerHTML = "@" + challenge.owner.username;
+	var usernameParagraphBolded = document.createElement("b");
+	usernameParagraphBolded.appendChild(usernameParagraph);
+	usernameParagraphBolded.onclick = function () {
+		window.location.href = "/ChallengeMe/Profile.jsp?username=" + challenge.owner.username;
+	}
 	// date
 	var dateParagraph = document.createElement("p");
 	dateParagraph.innerHTML = "at " + challenge.createdAt;
@@ -65,7 +70,7 @@ function createChallengeDiv (challenge)
 	
 	// add all attributes to colDiv
 	colDiv.appendChild(nameHeaderLink);
-	colDiv.appendChild(usernameParagraph);
+	colDiv.appendChild(usernameParagraphBolded);
 	colDiv.appendChild(dateParagraph);
 	colDiv.appendChild(document.createElement("br"));
 	colDiv.appendChild(descriptionParagraph);
