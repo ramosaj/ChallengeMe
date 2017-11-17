@@ -57,9 +57,6 @@ function getProfileByUrl (url)
 	getUserRequest.onload = function () {
 		if (getUserRequest.readyState === 4) {
             if (getUserRequest.status === 200) {
-            		// XXX
-            		var responseText = "{\r\n    \u201Cid\u201D: \u201C123456789\u201D,\r\n    \u201Cusername\u201D: \u201Ctommytrojan\u201D,\r\n    \u201Cname\u201D: \u201CTommy Trojan\u201D,\r\n    \u201Curl\u201D: \u201Chttps:\/\/api.dareme.com\/users\/tommytrojan\u201D,\r\n    \u201CavatarUrl\u201D: \u201Chttps:\/\/theleftbench.com\/wp-content\/uploads\/2017\/03\/USC.png\u201D,\r\n    \u201Cbio\u201D: \u201CFight On!\u201D,\r\n    \u201CchallengesCount\u201D: 1,\r\n    \u201CchallengesUrl\u201D: \u201Chttps:\/\/api.dareme.com\/users\/tommytrojan\/challenges\u201D,\r\n    \u201CinterestedUrl\u201D: \u201Chttps:\/\/api.dareme.com\/users\/tommytrojan\/interested\u201D,\r\n    \u201CcompletedCount\u201D: 0,\r\n    \u201CcompletedUrl\u201D: \u201Chttps:\/\/api.dareme.com\/users\/tommytrojan\/completed\u201D,\r\n    \u201CcreatedAt\u201D: 1507921778,\r\n    \u201ClastActive\u201D: 1507921778\r\n}";
-            		responseText = responseText.replace(/\u201C/g, '"').replace(/\u201D/g, '"');
             		var user = JSON.parse(getUserRequest.responseText);
         			
             		document.getElementById("full-name-value").innerHTML = user.name;

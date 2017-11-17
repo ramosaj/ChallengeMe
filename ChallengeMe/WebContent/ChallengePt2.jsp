@@ -19,42 +19,9 @@
       padding: 15px;
     }
   </style>
-  
-  <script>
-  	
-  	window.onload = function() {
-  		getChallenges();
-  		
-  		
-  	}
-  	function getChallenges() {
-  		var challenges = new XMLHttpRequest();
-  		//var interested = new XMLHttpRequest();
-  		//var completed = new XMLHttpRequest();
-  		
-
-  		challenges.open('GET','challenges',false);
-  		challenges.send();
-  		alert(challenges.responseText);
-  		var response = JSON.parse(challenges.responseText);
-  		
-  		alert(response.length)
-  		var html = "";
-  		for(var i=0;i<response.length;i++){
-  			html=html+"<div class=\"row\"> <div class=\"col-sm-12 well\">\n";
-  			html = html+ "<a href='#' onclick=redirect("+response[i].challengeLink+")>" + response[i].name + " </a>\n";
-  			html = html + "<p> "+response[i].owner.username+" <br /> at "+ response[i].createdAt +"</p>\n";
-  			html=html+"<p>"+response[i].description+"</p>\n <br />";
-  			html = html+"<button type='button' class='btn btn-primary'> Interested </button>";
-  			html = html+"</div>";
-  			html = html+"</div>";
-
-  		}
-  		document.getElementById("feed").innerHTML = html;
-  		
-  	}
-  	
-  	
+  <script src="./js/feed.js" type="text/javascript"></script>
+  <script type="text/javascript">
+  	window.onload = getChallenges;
   	
   	function addPost() {
   		var title = getElementById("title").value;
@@ -105,25 +72,21 @@
     <div class="col-sm-3">
     </div>
     <div class="col-sm-7">
-    <div class="row">
-    		<div class="col-sm-12 well">
-    			Upload a challenge. 
-    			<form method=POST onsubmit="return addPost();">
-    				Title:<input type="text" class="form-control" id="title" placeholder="Enter Title">
-    				Description: <textarea class="form-control" id="description" placeholder="Description">
-    				
-    				</textarea>
-    				<br />
-    				<input type="submit" class="form-control">
-    				
-    				
-    			
-    			</form>
-    		
-    		</div> 
-    </div>
-    <div id="feed">
-      
+      <div class="row">
+        <div class="col-sm-12 well">
+          Upload a challenge. 
+          <form method=POST onsubmit="return addPost();">
+            Title:
+            <input type="text" class="form-control" id="title" placeholder="Enter Title">
+            Description:
+            <textarea class="form-control" id="description" placeholder="Description"></textarea>
+            <br />
+            <input type="submit" class="form-control">
+          </form>
+        </div> 
+      </div>
+      <div id="feed">
+      <!--
       <div class="row">
         <div class="col-sm-12 well">
           <div style="text-align: center">
@@ -141,9 +104,10 @@
           </div>
         </div>
       </div>
-     </div>
-   
-     
+      -->
+      
+        <p>Loading...</p>
+      </div>
     </div>
   </div>
 </div>
