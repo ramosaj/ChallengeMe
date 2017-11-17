@@ -47,7 +47,7 @@ class DatabaseTest {
     @Test
     void userTest() {
     		try {
-		    	long userId = User.add("junit", "password", "UnitTest", "I'm unit test", "testUrl");
+		    	long userId = User.add("junit", "password", "testemail", "UnitTest", "I'm unit test", "testUrl");
 		    	assertNotNull(userId);
 		    	this.userId = userId;
 		    	this.user = User.get("junit");
@@ -61,7 +61,7 @@ class DatabaseTest {
     		
     		
     		try {
-    			User.update(this.userId, "updatedUserName", "updatedName", "updatedBio", "updatedUrl");
+    			User.update(this.userId, "updatedUserName", "updatedName", "updatedEmail", "updatedBio", "updatedUrl");
     			assertNotNull(User.get(this.userId));
     		} catch (SQLException e) {
     			e.printStackTrace();
@@ -88,6 +88,12 @@ class DatabaseTest {
 
     @AfterEach
     void tearDown() {
+    		try {
+				User.remove(this.userId);
+		} catch (SQLException e) {
+			e.printStackTrace();
+			fail("Error in deleting the user with id = " + this.userId);
+		}
     }
 
     @AfterAll

@@ -35,6 +35,7 @@ public class User
 	private Long id;
 	private String username;
 	private String password;
+	private String email;
 	private String name;
 	private String bio;
 	private String avatarURL;
@@ -49,7 +50,7 @@ public class User
 		private static final long serialVersionUID = -7465057662586463032L;
 	}
 
-	public User (Long id, String username, String password, String name, String bio, String avatarURL)
+	public User (Long id, String username, String password, String email, String name, String bio, String avatarURL)
 	{
 		this.id = id;
 		this.username = username;
@@ -57,6 +58,7 @@ public class User
 		this.name = name;
 		this.bio = bio;
 		this.avatarURL = avatarURL;
+		this.email = email;
 	}
 	
 	public User (Long id, String username, String password, String name, String bio, String avatarURL, List<Challenge> challenges, List<Challenge> completedChallenges,  List<Challenge> interestedChallenges)  
@@ -169,12 +171,12 @@ public class User
 	{
 		if (id == null) {
 			// adding a user
-			long userId = User.add(username, password, name, bio, avatarURL);
+			long userId = User.add(username, password, email, name, bio, avatarURL);
 			// update the id
 			id = userId;
 		}
 		else {
-			User.update(id, username, name, bio, avatarURL);
+			User.update(id, username, name, email, bio, avatarURL);
 		}
 		createAt = new Date();
 		assert(id != null);
@@ -239,17 +241,18 @@ public class User
 	 * @return
 	 * @throws SQLException
 	 */
-	public static long add (String username, String password, String name, String bio, String avatarURL)
+	public static long add (String username, String password, String email, String name, String bio, String avatarURL)
 	throws SQLException
 	{
-		String sqlHeader = (insertHeader + "(username, password, name, bio, avatarURL) VALUES ");
-		PreparedStatement ps = connection.prepareStatement(sqlHeader + "(?, ?, ?, ?, ?);", Statement.RETURN_GENERATED_KEYS);
+		String sqlHeader = (insertHeader + "(username, password, name, bio, avatarURL, email) VALUES ");
+		PreparedStatement ps = connection.prepareStatement(sqlHeader + "(?, ?, ?, ?, ?, ?);", Statement.RETURN_GENERATED_KEYS);
 		
 		ps.setString(1, username);
 		ps.setString(2, password);
 		ps.setString(3, name);
 		ps.setString(4, bio);
 		ps.setString(5, avatarURL);
+		ps.setString(6, email);
 				
 		int userCreated = ps.executeUpdate();
 		assert (userCreated == 0 || userCreated == 1);
@@ -264,15 +267,40 @@ public class User
 		return userId;
 	}
 	
-	public static void update (Long userId, String username, String name, String bio, String avatarURL)
+	/**
+	 * Remove a user by userId from database
+	 * @param userId
+	 * @throws SQLException 
+	 */
+	public static void remove (Long userId) throws SQLException
+	{
+		PreparedStatement ps = connection.prepareStatement("DELETE FROM " + TBL_NAME + " WHERE userId = " + userId);
+		int userDeleted = ps.executeUpdate();
+		assert (userDeleted == 0 || userDeleted == 1);
+	}
+	
+	
+	/**
+	 * Update the user info in database
+	 * 
+	 * @param userId
+	 * @param username
+	 * @param name
+	 * @param email
+	 * @param bio
+	 * @param avatarURL
+	 * @throws SQLException
+	 */
+	public static void update (Long userId, String username, String name, String email, String bio, String avatarURL)
 	throws SQLException
 	{
-		PreparedStatement ps = connection.prepareStatement(updateHeader + "SET username=?, name=?, bio=?, avatarURL=? WHERE userId=?");
+		PreparedStatement ps = connection.prepareStatement(updateHeader + "SET username=?, name=?, email=?, bio=?, avatarURL=? WHERE userId=?");
 		ps.setString(1, username);
 		ps.setString(2, name);
-		ps.setString(3, bio);
-		ps.setString(4, avatarURL);
-		ps.setLong(5, userId);
+		ps.setString(3, email);
+		ps.setString(4, bio);
+		ps.setString(5, avatarURL);
+		ps.setLong(6, userId);
 		int usersUpdated = ps.executeUpdate();
 		assert (usersUpdated == 0 || usersUpdated == 1);
 	}
@@ -286,10 +314,11 @@ public class User
 		String name = rs.getString("name");
 		String bio = rs.getString("bio");
 		String avatarURL = rs.getString("avatarURL");
+		String email = rs.getString("email");
 		User user = null;
 		
 		if (lazyLoad) {
-			user = new User(id, username, password, name, bio, avatarURL);
+			user = new User(id, username, password, email, name, bio, avatarURL);
 		}
 		else {
 	  		List<Challenge> challenges = getChallenges(id);
@@ -463,10 +492,10 @@ public class User
 		ResultSet rs = ps.executeQuery();
 		return rs.next();
 	}
-	public static boolean validateUsernam(String username)
+	public static boolean validateUsername(String username)
 	throws SQLException
 	{
-		PreparedStatement ps = connection.prepareStatement("SELECT * FROM " + CompletedChallenge.TBL_NAME + " WHERE username=? ");
+		PreparedStatement ps = connection.prepareStatement("SELECT * FROM " + TBL_NAME + " WHERE username=? ");
 		ps.setString(1, username);
 		
 		ResultSet rs = ps.executeQuery();
