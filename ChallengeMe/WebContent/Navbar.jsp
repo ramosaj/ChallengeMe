@@ -20,7 +20,7 @@
 			
 </style>
 <script>
-	function get-num-users(){
+	function getnumusers(){
 		var ws = new WebSocket("ws://serverSocket blah blah");
 		ws.onopen = function() {
 			document.getElementById("num-users")
@@ -45,6 +45,7 @@
 		
 		
 	}
+	
 	
 
 
