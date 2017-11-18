@@ -8,7 +8,13 @@
 <head>
   <title>Bootstrap Example</title>
   <%
+  /* 	if (!request.getSession().getAttribute("Authenticated").equals("YES") ){
+		response.sendRedirect("SignLog.jsp");
+		System.out.println("Not log in, redirecting to login page");
+	} */
   	System.out.println(request.getSession().getAttribute("username"));
+  	System.out.println(request.getSession().getAttribute("userID"));
+
   
   %>
   <meta charset="utf-8">

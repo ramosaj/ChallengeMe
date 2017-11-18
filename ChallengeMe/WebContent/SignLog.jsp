@@ -39,7 +39,8 @@
         		xhttp.open("GET", requeststr, false);
         		xhttp.send();
 
-        		if(xhttp.responseText.trim().length > 0) {
+        		if(xhttp.responseText.trim().length >= 0) {
+        			/* window.alert("LOL"); */
         			document.getElementById("err_message").innerHTML = xhttp.responseText;
         			return false;
         		}
@@ -106,7 +107,7 @@
         <form id="loginform" name = "loginform" method="GET" align="center" action="Feed.jsp" onsubmit ="return loginPressed();">
             <!-- <h6>Login</h6> -->
             <input type="text" name="username" placeholder="USERNAME"/><br />
-            <input type="text" name="password" placeholder="PASSWORD" /><br />
+            <input type="password" name="password" placeholder="PASSWORD" /><br />
             <input type="submit" name="login" value="LOG IN">
         </form>
         <form id="signupform" name="signupform" method="GET" align="center" onsubmit="return signupPressed();" action="SignLog.jsp">
