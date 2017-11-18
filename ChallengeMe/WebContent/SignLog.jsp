@@ -103,7 +103,7 @@
             <button onclick="signupButtonPressed()" name="loginButton" value="SIGN UP">SIGN UP</button>
         </div>
 
-        <form id="loginform" name = "loginform" method="GET" align="center" action="Challenge.jsp" onsubmit ="return loginPressed();">
+        <form id="loginform" name = "loginform" method="GET" align="center" action="Feed.jsp" onsubmit ="return loginPressed();">
             <!-- <h6>Login</h6> -->
             <input type="text" name="username" placeholder="USERNAME"/><br />
             <input type="text" name="password" placeholder="PASSWORD" /><br />

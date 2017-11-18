@@ -43,7 +43,7 @@ public class LoginServlet extends HttpServlet {
 		
 		if (!userExists) {
 			request.setAttribute("errmsg", "Invalid username and password.");
-			response.sendRedirect("SignLog.jsp");
+//			response.sendRedirect("SignLog.jsp");
 		}
 		else {
 			request.getSession().setAttribute("Authenticated", "YES");
