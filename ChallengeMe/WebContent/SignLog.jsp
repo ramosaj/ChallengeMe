@@ -31,12 +31,13 @@
         			return false;
         		}
         		var requeststr = "LoginServlet?";
-        		requeststr += "username=" + username;
-        		requeststr += "&password=" + password;
+        		requeststr += "username=" + username; 
+        		requeststr += "&password=" + password; 
+        		
         		
         		
         		var xhttp = new XMLHttpRequest();
-        		xhttp.open("GET", requeststr, false);
+        		xhttp.open("POST", requeststr, false);
         		xhttp.send();
 
         		if(xhttp.responseText.trim().length >= 0) {
@@ -75,7 +76,7 @@
         		requeststr += "&password=" + password;
         	
         		var xhttp = new XMLHttpRequest();
-        		xhttp.open("GET", requeststr, false);
+        		xhttp.open("POST", requeststr, false);
         		xhttp.send();
         		if(xhttp.responseText.trim().length > 0) {
         			document.getElementById("err_message").innerHTML = xhttp.responseText;
@@ -104,13 +105,13 @@
             <button onclick="signupButtonPressed()" name="loginButton" value="SIGN UP">SIGN UP</button>
         </div>
 
-        <form id="loginform" name = "loginform" method="GET" align="center" action="Feed.jsp" onsubmit ="return loginPressed();">
+        <form id="loginform" name = "loginform" method="POST" align="center" action="Feed.jsp" onsubmit ="return loginPressed();">
             <!-- <h6>Login</h6> -->
             <input type="text" name="username" placeholder="USERNAME"/><br />
             <input type="password" name="password" placeholder="PASSWORD" /><br />
             <input type="submit" name="login" value="LOG IN">
         </form>
-        <form id="signupform" name="signupform" method="GET" align="center" onsubmit="return signupPressed();" action="SignLog.jsp">
+        <form id="signupform" name="signupform" method="POST" align="center" onsubmit="return signupPressed();" action="SignLog.jsp">
             <!-- <h6>Signup</h6> -->
             <input type="text" name="fname" placeholder="FIRST NAME"/><br />
             <input type="text" name="lname" placeholder="LAST NAME"/><br />

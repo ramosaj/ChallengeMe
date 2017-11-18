@@ -20,10 +20,8 @@ public class LoginServlet extends HttpServlet {
 	private static final long serialVersionUID = 1L;
        
 
-	/**
-	 * @see HttpServlet#doGet(HttpServletRequest request, HttpServletResponse response)
-	 */
-	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException
+
+	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException
 	{
 		// Why are we using the GET protocol for logging in...
 		String username = request.getParameter("username");
