@@ -19,13 +19,16 @@
 }
 </style>
 <script>
-	// FIXME: get from the current session
+	
 	var currentUsername = "anthony";
 	
 	var url = new URL(window.location.href);
 	var username = url.searchParams.get("username");
 	var challengeId = url.searchParams.get("challengeId");
-	
+	var socket;
+	window.onbeforeunload = function(e) {
+			socket.close();
+		};
 	window.onload = function() {
 		loadInterest(
 			currentUsername, username, challengeId,
@@ -54,6 +57,20 @@
 	    		interestedUsersCountEl.innerHTML = interestedUsersCountEl.dataset.value;
 			}
 		);
+		socket = new WebSocket("ws://localhost:8080/ChallengeMe/ws");
+		socket.onopen = function(event) {
+			socket.send(challengeId);
+			//document.getElementById("mychat").innerHTML += "Connected!";
+		}
+		socket.onmessage = function(event) {
+			document.getElementById("viewingNum").innerHTML += event.data;
+		}
+		socket.onclose = function(event) {
+			var x="close"+challengeId;
+			socket.send(x)
+		//	document.getElementById("mychat").innerHTML += "Disconnected!";
+		};
+
 		loadChallenge(username, challengeId);
 		loadInterestedUsers(username, challengeId);
 		loadCompletedUsers(username, challengeId);
@@ -67,6 +84,9 @@
     </span>
     <span id="date">
       <span id="date-value"></span>
+    </span>
+    <span id="numInterested">
+      <span>Num-Viewing: </span><span id="viewingNum"></span>
     </span>
     <span>
       <br />

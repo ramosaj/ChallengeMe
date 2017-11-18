@@ -15,31 +15,17 @@
   }
   </style>
   <script>
-    function getnumusers(){
-        var ws = new WebSocket("ws://serverSocket blah blah");
-        ws.onopen = function() {
-            document.getElementById("num-users")
-
-
-
-
-        }
-
-        ws.onmessage = function() {
-
-
-
-        }
-
-
-        ws.onclose = function () {
-
-
-        }
-
-
-
-    }
+	var socket;
+	function connectToServer() {
+		socket = new WebSocket("ws://localhost:8080/ChallengeMe/ws");
+		socket.onopen = function(event) {
+		}
+		socket.onmessage = function(event) {
+			document.getElementById("mychat").innerHTML += event.data + "<br />";
+		}
+		socket.onclose = function(event) {
+		}
+	}
 
 
   </script>
