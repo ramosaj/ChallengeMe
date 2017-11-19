@@ -101,10 +101,15 @@ class DatabaseTest {
     		}
     }
 
+    @Test
+    void strTest() {
+    		assertEquals(true, "Dont sleep through a dealine".contains("dealine"));
+    }
+    
     @AfterEach
     void tearDown() {
     		try {
-				User.remove(this.userId);
+			User.remove(this.userId);
 		} catch (SQLException e) {
 			e.printStackTrace();
 			fail("Error in deleting the user with id = " + this.userId);
