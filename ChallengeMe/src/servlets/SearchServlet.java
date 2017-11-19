@@ -72,9 +72,10 @@ public class SearchServlet extends HttpServlet {
 		Gson gson = new Gson();
 		String sendUsers = gson.toJson(this.displayUser);
 		String sendChallenge = gson.toJson(this.displayChallenge);
+		System.out.println(this.displayChallenge.size());
 		request.setAttribute("userResult", sendUsers);
 		request.setAttribute("challengeResult", sendChallenge);
-		response.sendRedirect("result.jsp");
+		response.sendRedirect("Results.jsp");
 	}
 
 	/**

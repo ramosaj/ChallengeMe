@@ -57,7 +57,7 @@
       </li>
       -->
     </ul>
-    <form class="navbar-form" action="search" role="search" >
+    <form class="navbar-form" method="GET" action="SearchServlet" role="search" >
       <div class="input-group">
         <input id="searchItem" type="text" class="form-control" placeholder="Search...">
         <span class="input-group-btn">

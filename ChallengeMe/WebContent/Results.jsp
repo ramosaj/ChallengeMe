@@ -23,28 +23,34 @@
 		
 		<table cellpadding="10" width="800">
 			<%	
-			for (int i = 0; i < myUser.size(); i ++)
+			if (myUser != null)
 			{
-			%>
-			<tr>
-			
-				<td class="firstcolumn" align="center" rowspan="1" colspan="1" name="<%=myUser.get(i).getUsername()%>"><%= myUser.get(i).getUsername() %></td>
-			
-			</tr>
-			<%
+				for (int i = 0; i < myUser.size(); i ++)
+				{
+				%>
+				<tr>
+				
+					<td class="firstcolumn" align="center" rowspan="1" colspan="1" name="<%=myUser.get(i).getUsername()%>"><%= myUser.get(i).getUsername() %></td>
+				
+				</tr>
+				<%
+				}
 			}
 			%>
 			
-			<%	
-			for (int i = 0; i < myChallenges.size(); i ++)
-			{
-			%>
-			<tr>
-			
-				<td class="firstcolumn" align="center" rowspan="1" colspan="1" name="<%=myChallenges.get(i).getTitle()%>"><%= myChallenges.get(i).getTitle() %></td>
-				<td align = "center" rowspan = "1" colspan = "1" name = "<%=myChallenges.get(i).getDescription() %>"><%=myChallenges.get(i).getDescription() %></td>
-			</tr>
 			<%
+			if (myChallenges != null)
+			{
+				for (int i = 0; i < myChallenges.size(); i ++)
+				{
+				%>
+				<tr>
+				
+					<td class="firstcolumn" align="center" rowspan="1" colspan="1" name="<%=myChallenges.get(i).getTitle()%>"><%= myChallenges.get(i).getTitle() %></td>
+					<td align = "center" rowspan = "1" colspan = "1" name = "<%=myChallenges.get(i).getDescription() %>"><%=myChallenges.get(i).getDescription() %></td>
+				</tr>
+				<%
+				}
 			}
 			%>
 		
