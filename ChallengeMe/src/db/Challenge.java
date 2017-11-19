@@ -280,7 +280,7 @@ public class Challenge
 	public static void replaceCategories (Long challengeId, List<String> categories)
 	throws SQLException
 	{
-		PreparedStatement ps = connection.prepareStatement("UPDATE " + TBL_NAME + " SET categories=? WHERE Challenge.challengeId=?");
+		PreparedStatement ps = connection.prepareStatement("UPDATE " + TBL_NAME + " SET categories=? WHERE challengeId=?");
 		ps.setString(1, String.join(", ", categories));
 		
 		int categoriesUpdated = ps.executeUpdate();
