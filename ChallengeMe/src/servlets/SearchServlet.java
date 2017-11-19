@@ -47,12 +47,12 @@ public class SearchServlet extends HttpServlet {
 			List<Challenge> allChallenge = Challenge.getAll();
 			List<User> allUser = User.getAll();
 			
-			Callable challengeCall = new SearchChallengeThread(allChallenge, searchItem);
-			Callable userCall = new SearchUserThread(allUser, searchItem);
+			Callable<List<Challenge>> challengeCall = new SearchChallengeThread(allChallenge, searchItem);
+			Callable<List<User>> userCall = new SearchUserThread(allUser, searchItem);
 			
-			this.tasks[0] = new FutureTask(challengeCall);
-			this.tasks[1] = new FutureTask(userCall);
-			for(FutureTask task : this.tasks) {
+			this.tasks[0] = new FutureTask<List<Challenge>>(challengeCall);
+			this.tasks[1] = new FutureTask<List<User>>(userCall);
+			for(FutureTask<List<Challenge>> task : this.tasks) {
 				Thread t = new Thread(task);
 				t.start();
 			}
