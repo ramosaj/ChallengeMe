@@ -75,7 +75,7 @@ function createChallengeDiv (challenge)
 	interestedButton.appendChild(interestedButtonIcon);
 	interestedButton.innerHTML += " Interested";
 	
-	//loadInterest(username, challenge.owner.username, challenge.id, interestedButton, null, null);
+	loadInterest(username, challenge.owner.username, challenge.id, interestedButton, null, null);
 	
 	// add all attributes to colDiv
 	colDiv.appendChild(nameHeaderLink);
