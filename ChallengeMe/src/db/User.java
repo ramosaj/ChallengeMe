@@ -507,13 +507,15 @@ public class User
 	public static boolean validation(String username, String password)
 	throws SQLException
 	{
-		PreparedStatement ps = connection.prepareStatement("SELECT * FROM " + CompletedChallenge.TBL_NAME + " WHERE username=? AND password=?");
-		ps.setString(1, username);
+		System.out.println("validation: " + username + " " + password);
+		PreparedStatement ps = connection.prepareStatement("SELECT * FROM " + User.TBL_NAME + " WHERE username=? AND password=?");
+		ps.setString(1, username );
 		ps.setString(2, password);
 		
 		ResultSet rs = ps.executeQuery();
 		return rs.next();
 	}
+	
 	public static boolean validateUsername(String username)
 	throws SQLException
 	{

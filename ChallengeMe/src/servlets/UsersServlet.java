@@ -1,11 +1,5 @@
 package servlets;
 
-import db.User;
-import db.User.UserNotFoundException;
-import db.Challenge;
-
-import util.Serializer;
-
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.PrintWriter;
@@ -26,7 +20,11 @@ import javax.servlet.http.HttpServletResponse;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
-import com.google.gson.JsonParser;
+
+import db.Challenge;
+import db.User;
+import db.User.UserNotFoundException;
+import util.Serializer;
 
 /**
  * @author Eddo W. Hintoso
@@ -148,6 +146,7 @@ public class UsersServlet extends HttpServlet
 					&& extractor.toBeQueried.equals("challenges")
 					&& extractor.ownername == null
 					&& extractor.challengeId == null) {
+				System.out.println(request.getParameter("title"));
 				createChallenge(extractor.username, request, response);
 			}
 			else {
@@ -553,20 +552,21 @@ public class UsersServlet extends HttpServlet
 		// get request body
 		BufferedReader br = request.getReader();
 		String requestBodyString = br.lines().collect(Collectors.joining(System.lineSeparator()));
-		JsonObject requestBody = new JsonParser().parse(requestBodyString).getAsJsonObject();
+	
+		String title = request.getParameter("title");
+		String description = request.getParameter("description");
+		List<String> categories = new ArrayList<String>();
+		//for(String element: cat) {
+		//	categories.add(element);
+	//	}
 		
-		// extract values from request body
-		String title = requestBody.get("title").getAsString();
-		String description = requestBody.get("description").getAsString();
-		List<String> categories = new ArrayList<>();
-		JsonArray categoriesJSONArray = requestBody.get("categories").getAsJsonArray();
-		for (JsonElement c : categoriesJSONArray) {
-			categories.add(c.getAsString());
-		}
+		
+		
 		
 		JsonElement createdChallengeJSON = new JsonObject();
 		try {
 			User user = User.get(username);
+			Challenge.add(user, title, description);
 			// TODO: check if the user is the current session user
 			Challenge challenge = new Challenge(user, title, description, categories);
 			createdChallengeJSON = Serializer.getChallengeJSON(challenge, false);

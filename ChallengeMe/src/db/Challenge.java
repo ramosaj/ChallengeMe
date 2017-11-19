@@ -57,23 +57,25 @@ public class Challenge
 	}
 	
 	// for getting an existing challenge, lazy-loaded
-	public Challenge (Long id, User user, String title, String description, List<String> categories)
+	public Challenge (Long id, User user, String title, String description, List<String> categories,Date createAt)
 	{
 		this.id = id;
 		this.user = user;
 		this.title = title;
 		this.description = description;
 		this.categories = categories;
+		this.createAt = createAt;
 	}
 	
 	// for getting an existing challenge without lazy-loading
-	public Challenge (Long id, User user, String title, String description, List<String> categories, List<User> completedUsers, List<User> interestedUsers)  
+	public Challenge (Long id, User user, String title, String description, List<String> categories, List<User> completedUsers, List<User> interestedUsers,Date createAt)  
 	{
 		this.id = id;
 		this.user = user;
 		this.title = title;
 		this.description = description;
 		this.categories = categories;
+		this.createAt = createAt;
 		
 		this.completedUsers = completedUsers;
 		this.interestedUsers = interestedUsers;
@@ -228,10 +230,11 @@ public class Challenge
 	{
 		Long userId = user.getId();
 		
-		PreparedStatement ps = connection.prepareStatement("INSERT INTO " + TBL_NAME + " VALUES (?, ?, ?)", Statement.RETURN_GENERATED_KEYS);
+		PreparedStatement ps = connection.prepareStatement("INSERT INTO " + TBL_NAME + "(userId,title,description) VALUES (?, ?, ?)", Statement.RETURN_GENERATED_KEYS);
 		ps.setLong(1, userId);
 		ps.setString(2, title);
 		ps.setString(3, description);
+		System.out.println(userId + " " + title + " " + description);
 				
 		int challengeCreated = ps.executeUpdate();
 		assert (challengeCreated == 0 || challengeCreated == 1);
@@ -299,6 +302,7 @@ public class Challenge
 		Long userId = rs.getLong("userId");
 		String title = rs.getString("title");
 		String description = rs.getString("description");
+		Date createdAt = rs.getTimestamp("createdAt");
 		User user = null;
 		try {
 			user = User.get(userId);
@@ -312,12 +316,12 @@ public class Challenge
 		Challenge challenge = null;
 		
 		if (lazyLoad) {
-			challenge = new Challenge(id, user, title, description, categories);
+			challenge = new Challenge(id, user, title, description, categories,createdAt);
 		}
 		else {
 			List<User> completedUsers = getCompletedUsers(id);
 			List<User> interestedUsers = getInterestedUsers(id);
-			challenge = new Challenge(id, user, title, description, categories, completedUsers, interestedUsers);
+			challenge = new Challenge(id, user, title, description, categories, completedUsers, interestedUsers,createdAt);
 		}
 		
 		return challenge;

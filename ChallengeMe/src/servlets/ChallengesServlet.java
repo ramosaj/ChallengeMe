@@ -163,6 +163,7 @@ public class ChallengesServlet extends HttpServlet
 			// get user challenges
 			List<Challenge> challenges = Challenge.getAll();
 			for (Challenge challenge : challenges) {
+				System.out.println(challenge.getCreateAtDate());
 				JsonElement challengeJSON = Serializer.getChallengeJSON(challenge, true);
 				challengesJSON.add(challengeJSON);
 			}

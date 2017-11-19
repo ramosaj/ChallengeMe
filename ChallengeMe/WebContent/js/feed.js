@@ -2,13 +2,13 @@ function getChallenges ()
 {
 	var getChallengesRequest = new XMLHttpRequest();
 	getChallengesRequest.open("GET", "/ChallengeMe/challenges", true);
-	
+
 	getChallengesRequest.onload = function () {
 		if (getChallengesRequest.readyState === 4) {
             if (getChallengesRequest.status === 200) {
             		var challenges = JSON.parse(getChallengesRequest.responseText);
-        			
             		// get rid of the 'Loading...' text
+            		alert("ding");
             		document.getElementById("feed").innerHTML = null;
             		// render every challenge element
             		for (var challenge of challenges) {
@@ -55,7 +55,11 @@ function createChallengeDiv (challenge)
 	}
 	// date
 	var dateParagraph = document.createElement("p");
-	dateParagraph.innerHTML = "at " + challenge.createdAt;
+	var date = challenge.createdAt.split(" ");
+	var day = new Date(date[0]).toLocaleDateString();
+	var time = new Date(date[1]).toLocaleTimeString();
+	
+	dateParagraph.innerHTML = "created on: " + day + " at " + time;
 	// description
 	var descriptionParagraph = document.createElement("p");
 	descriptionParagraph.innerHTML = challenge.description;
@@ -71,7 +75,7 @@ function createChallengeDiv (challenge)
 	interestedButton.appendChild(interestedButtonIcon);
 	interestedButton.innerHTML += " Interested";
 	
-	loadInterest(username, challenge.owner.username, challenge.id, interestedButton, null, null);
+	//loadInterest(username, challenge.owner.username, challenge.id, interestedButton, null, null);
 	
 	// add all attributes to colDiv
 	colDiv.appendChild(nameHeaderLink);

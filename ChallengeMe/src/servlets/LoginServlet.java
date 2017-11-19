@@ -35,9 +35,6 @@ public class LoginServlet extends HttpServlet {
 		catch (SQLException sqle) {
 			sqle.printStackTrace();
 		}
-		finally {
-			userExists = false;
-		}
 		
 		if (!userExists) {
 			request.getSession().setAttribute("Authenticated", "NO");

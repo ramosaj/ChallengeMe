@@ -12,6 +12,7 @@
 
         }
         function loginButtonPressed()
+        
         {
             document.getElementById("loginform").style.display = "block";
             document.getElementById("signupform").style.display = "none";
@@ -22,6 +23,7 @@
         }
         
         function loginPressed() {
+        	
         		var username = document.loginform.username.value;
         		var password = document.loginform.password.value;
         		
@@ -40,11 +42,12 @@
         		xhttp.open("POST", requeststr, false);
         		xhttp.send();
 
-        		if(xhttp.responseText.trim().length >= 0) {
-        			/* window.alert("LOL"); */
+        		if(xhttp.responseText.trim().length > 0) {
+        			alert(xhttp.responseText);
         			document.getElementById("err_message").innerHTML = xhttp.responseText;
         			return false;
         		}
+        		window.location.assign("Feed.jsp");
         		return true; 
         		/* return false; */
         }

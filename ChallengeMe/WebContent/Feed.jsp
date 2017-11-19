@@ -40,23 +40,29 @@
   <script type="text/javascript">
     // Current user
 	var username = "anthony"; // XXX
-  	window.onload = getChallenges;
+  	window.onload = getChallenges();
   	
   	function addPost() {
   		var title = document.getElementById("title").value;
   		var description = document.getElementById("description").value;
+  		var categories = document.getElementById("categories").value;
+  		alert(categories);
   		var challenge = new XMLHttpRequest();
-  		var url = "user/" +<%=request.getSession().getAttribute("username")%>+"/challenges";
+  		var url = "users/"+"<%=request.getSession().getAttribute("username")%>" + "/challenges";
   		challenge.open("POST", url, true);
   		challenge.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
   		var descript = encodeURI(description);
+  		var cat = encodeURI(categories);
+  		alert(cat);
+  	
   		challenge.onreadystatechange = function() {
   			if(this.readyState == 4 && this.status == 200){
   				getChallenges();
   				
   			}
   		}
-  		challenge.send("title="+title+"&description="+descript);
+  		
+  		challenge.send("title="+title+"&description="+descript+"&categories="+cat);
   		
   		
   		
