@@ -57,7 +57,7 @@
       </li>
       -->
     </ul>
-    <form class="navbar-form" role="search" >
+    <form class="navbar-form" action="Results.jsp" method="POST" onsubmit ="return searchPressed();" role="search" >
       <div class="input-group">
         <input id="searchItem" type="text" class="form-control" placeholder="Search...">
         <span class="input-group-btn">
@@ -71,10 +71,18 @@
 </body>
 <script type="text/javascript">
 
-$("form").submit(function (event) {
-    event.preventDefault();
-    $.get('SearchServlet', {searchItem : $("#searchItem").val()});
-})
+function searchPressed() {
+	var xhttp = new XMLHttpRequest();
+	var requeststr = "SearchServlet?searchItem="+$("#searchItem").val();
+	xhttp.open("POST", requeststr, false);
+	xhttp.send();
+	if(xhttp.responseText.trim().length > 0) {
+		alert(xhttp.responseText);
+// 		var result=xhttp.responseText;
+// 		var splitRes = result.split("^");
+		return true;
+	}
+}
 </script>
 
 </html>

@@ -3,6 +3,7 @@
 <%@ page import="db.Challenge" %>
 <%@ page import="com.google.gson.Gson" %>
 <%@ page import="java.util.ArrayList"%>
+<%@ page import="java.util.List"%>
 <%@ page import="com.google.gson.reflect.TypeToken" %>
 <%@ page import="java.lang.reflect.Type" %>
     
@@ -19,10 +20,16 @@
 			Gson gson = new Gson();
 		
 		// read the List of Users and List of Challenges from the session
-		Type userType = new TypeToken<Vector<User>>(){}.getType();
-		Type challengeType = new TypeToken<Vector<Challenge>>(){}.getType();
-		Vector<User> myUser = (Vector<User>)gson.fromJson((String)session.getAttribute("userResult"), userType);
-		Vector<Challenge> myChallenges = (Vector<Challenge>)gson.fromJson((String)session.getAttribute("challengeResult"), challengeType);
+		Type userType = new TypeToken<ArrayList<User>>(){}.getType();
+		Type challengeType = new TypeToken<ArrayList<Challenge>>(){}.getType();
+		String userString = (String)session.getAttribute("userResult");
+		System.out.println("user string is: "+ userString);
+		ArrayList<User> myUser=(ArrayList<User>)gson.fromJson(userString,userType);
+		//Vector<User> myUser = (Vector<User>)gson.fromJson((String)session.getAttribute("userResult"), userType);
+				ArrayList<Challenge> myChallenges=(ArrayList<Challenge>)gson.fromJson((String)session.getAttribute("challengeResult"),challengeType);
+		System.err.println("size of myUser: "+ myUser.size());
+
+		//Vector<Challenge> myChallenges = (Vector<Challenge>)gson.fromJson((String)session.getAttribute("challengeResult"), challengeType);
 		%>
 		
 		<table cellpadding="10" width="800">
@@ -31,10 +38,12 @@
 			{
 				for (int i = 0; i < myUser.size(); i ++)
 				{
+					String name = myUser.get(i).getName();
+					String username=myUser.get(i).getUsername();
 				%>
 				<tr>
 				
-					<td class="firstcolumn" align="center" rowspan="1" colspan="1" name="<%=myUser.get(i).getUsername()%>"><%= myUser.get(i).getUsername() %></td>
+					<td class="firstcolumn" align="center" rowspan="1" colspan="1"><%=username%></td>
 				
 				</tr>
 				<%
@@ -48,10 +57,12 @@
 				for (int i = 0; i < myChallenges.size(); i ++)
 				{
 				%>
-				<tr>
-				
-					<td class="firstcolumn" align="center" rowspan="1" colspan="1" name="<%=myChallenges.get(i).getTitle()%>"><%= myChallenges.get(i).getTitle() %></td>
-					<td align = "center" rowspan = "1" colspan = "1" name = "<%=myChallenges.get(i).getDescription() %>"><%=myChallenges.get(i).getDescription() %></td>
+				<tr><% 
+					String title = myChallenges.get(i).getTitle();
+					String description = myChallenges.get(i).getDescription();
+					%>
+					<td class="firstcolumn" align="center" rowspan="1" colspan="1"><%=title%></td>
+					<td align = "center" rowspan = "1" colspan = "1" ><%=description%></td>
 				</tr>
 				<%
 				}

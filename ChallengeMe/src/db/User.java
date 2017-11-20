@@ -133,6 +133,10 @@ public class User
 	{
 		return createdAt;
 	}
+	public void setCreateAtDate(Date date) 
+	{
+		createdAt=date;
+	}
 
 	public List<Challenge> getChallenges ()
 	throws SQLException
