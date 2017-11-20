@@ -10,7 +10,6 @@
   <title>Results Page</title>
   <script src="./js/results.js" type="text/javascript"></script>
   <script src="./js/util.js" type="text/javascript"></script>
-
   <script>
   var url = new URL(window.location.href);
   var query = url.searchParams.get("q");

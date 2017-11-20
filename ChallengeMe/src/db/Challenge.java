@@ -45,7 +45,7 @@ public class Challenge
 
 	private User user;
 	
-	private Date createAt = new Date();
+	private Long createAt;
 	
 	// for creating 
 	public Challenge (User user, String title, String description, List<String> categories)
@@ -64,7 +64,7 @@ public class Challenge
 		this.title = title;
 		this.description = description;
 		this.categories = categories;
-		this.createAt = createAt;
+		this.createAt = createAt.getTime();
 	}
 	
 	// for getting an existing challenge without lazy-loading
@@ -75,7 +75,7 @@ public class Challenge
 		this.title = title;
 		this.description = description;
 		this.categories = categories;
-		this.createAt = createAt;
+		this.createAt = createAt.getTime();
 		
 		this.completedUsers = completedUsers;
 		this.interestedUsers = interestedUsers;
@@ -121,9 +121,13 @@ public class Challenge
 		return user;
 	}
 		
-	public Date getCreateAtDate() 
+	public Long getCreateAtDate() 
 	{
 		return createAt;
+	}
+	public void setCreateAtDate(Date date) 
+	{
+		createAt=null;
 	}
 
 	public List<User> getCompletedUsers ()
@@ -180,7 +184,7 @@ public class Challenge
 		// challenge could still be updated if categories failed to be replaced
 		// violates atomicity, but whatever
 		Challenge.replaceCategories(id, categories);
-		createAt = new Date();
+		createAt = new Date().getTime();
 		assert(id != null);
 	}
 	
