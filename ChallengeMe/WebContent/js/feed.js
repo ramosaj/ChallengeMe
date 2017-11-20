@@ -64,6 +64,38 @@ function createChallengeDiv (challenge)
 	var descriptionParagraph = document.createElement("p");
 	descriptionParagraph.innerHTML = challenge.description;
 	
+	// views button
+	var viewsButton = document.createElement("button");
+	viewsButton.type = "button";
+	viewsButton.classList.add("views-btn");
+	viewsButton.classList.add("btn");
+	viewsButton.classList.add("btn-warning");
+	viewsButton.classList.add("disabled");
+	var viewsButtonIcon = document.createElement("i");
+	viewsButtonIcon.classList.add("views-btn-icon");
+	viewsButtonIcon.classList.add("fa");
+	viewsButtonIcon.classList.add("fa-eye");
+	var viewsButtonValueSpan = document.createElement("span");
+	viewsButtonValueSpan.classList.add("views-count");
+	viewsButton.appendChild(viewsButtonIcon);
+	viewsButton.appendChild(document.createTextNode(" "));
+	viewsButton.appendChild(viewsButtonValueSpan);
+	
+	// display views
+	var viewsSocket;
+	viewsSocket = new WebSocket("ws://localhost:8080/ChallengeMe/views");
+	viewsSocket.onopen = function(event) {
+		viewsSocket.send("QUERY " + challenge.id);
+	}
+	viewsSocket.onmessage = function (event) {
+		viewsButtonValueSpan.dataset.viewsCount = event.data;
+		viewsButtonValueSpan.innerHTML = event.data;
+	}
+	viewsSocket.onclose = function(event) {
+		var x= "CLOSE " + challengeId;
+		viewsSocket.send(x)
+	};
+	
 	// interested button
 	var interestedButton = document.createElement("button");
 	interestedButton.type = "button";
@@ -91,7 +123,6 @@ function createChallengeDiv (challenge)
 	completedButton.innerHTML += " Completed";
 	loadCompletion(username, challenge.owner.username, challenge.id, completedButton, null, null);
 	
-	
 	// add all attributes to colDiv
 	colDiv.appendChild(nameHeaderLink);
 	colDiv.appendChild(usernameParagraphBolded);
@@ -99,6 +130,8 @@ function createChallengeDiv (challenge)
 	colDiv.appendChild(document.createElement("br"));
 	colDiv.appendChild(descriptionParagraph);
 	colDiv.appendChild(document.createElement("br"));
+	colDiv.appendChild(viewsButton);
+	colDiv.appendChild(document.createTextNode(" "));
 	colDiv.appendChild(interestedButton);
 	colDiv.appendChild(document.createTextNode(" "));
 	colDiv.appendChild(completedButton);

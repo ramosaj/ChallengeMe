@@ -29,7 +29,7 @@
       padding: 15px;
     }
     
-	.fa-check, .fa-star, .fa-times {
+	.fa-check, .fa-star, .fa-eye {
 	  font-size: 20px;
 	}
   </style>

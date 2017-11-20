@@ -15,7 +15,7 @@
   font-size: 14px;
 }
 
-.fa-check, .fa-star, .fa-times {
+.fa-check, .fa-star, .fa-eye {
   font-size: 20px;
 }
 </style>
@@ -24,10 +24,8 @@
 	var url = new URL(window.location.href);
 	var username = url.searchParams.get("username");
 	var challengeId = url.searchParams.get("challengeId");
-	var socket;
-	window.onbeforeunload = function(e) {
-			socket.close();
-		};
+	
+	var viewsSocket;
 	window.onload = function() {
 		loadInterest(
 			currentUsername, username, challengeId,
@@ -85,18 +83,18 @@
 			}
 		);
 		
-		socket = new WebSocket("ws://localhost:8080/ChallengeMe/ws");
-		socket.onopen = function(event) {
-			socket.send(challengeId);
-			//document.getElementById("mychat").innerHTML += "Connected!";
+		viewsSocket = new WebSocket("ws://localhost:8080/ChallengeMe/views");
+		viewsSocket.onopen = function(event) {
+			viewsSocket.send("VIEW " + challengeId);
 		}
-		socket.onmessage = function(event) {
-			document.getElementById("viewingNum").innerHTML += event.data;
+		viewsSocket.onmessage = function (event) {
+			var viewsButtonValueSpan = document.getElementsByClassName("views-count")[0];
+			viewsButtonValueSpan.innerHTML = event.data;
+			viewsButtonValueSpan.dataset.viewsCount = event.data;
 		}
-		socket.onclose = function(event) {
-			var x="close"+challengeId;
-			socket.send(x)
-		//	document.getElementById("mychat").innerHTML += "Disconnected!";
+		viewsSocket.onclose = function(event) {
+			var x= "CLOSE " + challengeId;
+			viewsSocket.send(x)
 		};
 
 		loadChallenge(username, challengeId);
@@ -113,11 +111,12 @@
     <span id="date">
       <span id="date-value"></span>
     </span>
-    <span id="numInterested">
-      <span>Num-Viewing: </span><span id="viewingNum"></span>
-    </span>
     <span>
       <br />
+      <button type="button" class="views-btn btn btn-warning disabled">
+        <i class="interested-btn-icon fa fa-eye"></i> 
+        <span class="views-count"></span>
+      </button>
       <button type="button" class="interested-btn btn btn-secondary">
         <i class="interested-btn-icon fa"></i> Interested
       </button>
