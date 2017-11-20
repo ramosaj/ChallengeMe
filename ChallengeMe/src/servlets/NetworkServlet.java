@@ -3,7 +3,6 @@ package servlets;
 import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.Vector;
 
 import javax.websocket.OnClose;
 import javax.websocket.OnError;
@@ -12,48 +11,80 @@ import javax.websocket.OnOpen;
 import javax.websocket.Session;
 import javax.websocket.server.ServerEndpoint;
 
-@ServerEndpoint(value = "/ws")
-public class NetworkServlet {
-
-	private static Map<String, Integer> sessionVector = new HashMap<String, Integer>();
-	private static Map<Session, String> sessions = new HashMap<Session, String>();
+@ServerEndpoint(value = "/views")
+public class NetworkServlet
+{
+	// Maps a challengeId with the number of views
+	private static Map<String, Integer> views = new HashMap<>();
+	
+	private static Map<Session, String> sessions = new HashMap<>();
 	
 	@OnOpen
-	public void open(Session session) {
-		System.out.println("Connection made!");
+	public void open (Session session) {
+		System.out.println(session + " - Connection made!");
 	}
 	
 	@OnMessage
-	public void onMessage(String message, Session session) {
-		if(sessions.get(session)==null)
-		sessions.put(session, message);
-		else
-			sessions.replace(session, message);
-		if(sessionVector.get(message)==null)
-		{
-			sessionVector.put(message, 1 );
+	public void onMessage (String message, Session session) {
+		System.out.format("%s from %s" + System.lineSeparator(), message, session.getId());
+		
+		String[] messageComponents = message.split(" ");
+		String action = messageComponents[0];
+		String challengeId = messageComponents[1];
+		
+		if (action.equals("VIEW")) {
+			onView(challengeId, session);
 		}
-		else
-		{
-			sessionVector.replace(message, sessionVector.get(message)+1);
-		}
-		try {
-			session.getBasicRemote().sendText(sessionVector.get(message).toString());
-		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+		
+		else if (action.equals("QUERY")) {
+			onQuery(challengeId, session);
 		}
 		
 	}
 	
+	public void onView (String challengeId, Session session)
+	{
+		if (sessions.get(session) == null) {
+			sessions.put(session, challengeId);
+		}
+		else {
+			sessions.replace(session, challengeId);
+		}
+		
+		if (views.get(challengeId) == null) {
+			views.put(challengeId, 1);
+		}
+		else {
+			views.replace(challengeId, views.get(challengeId) + 1);
+		}
+		
+		onQuery(challengeId, session);
+	}
+	
+	public void onQuery (String challengeId, Session session)
+	{
+		Integer challengeViews = views.get(challengeId);
+		if (challengeViews == null) {
+			challengeViews = 0;
+		}
+		
+		try {
+			session.getBasicRemote().sendText(challengeViews.toString());
+		} catch (IOException ioe) {
+			ioe.printStackTrace();
+		}
+	}
+	
 	@OnClose
-	public void close(Session session) {
-		sessionVector.replace(sessions.get(session), sessionVector.get(sessions.get(session))-1);
+	public void close (Session session)
+	{
+		views.replace(sessions.get(session), views.get(sessions.get(session))-1);
 		System.out.println("Disconnecting!");
 	}
 	
 	@OnError
-	public void error(Throwable error) {
-		System.out.println("Error!");
+	public void error (Throwable error)
+	{
+		System.out.println(error.getMessage());
 	}
 }

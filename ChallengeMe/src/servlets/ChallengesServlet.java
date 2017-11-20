@@ -5,6 +5,8 @@ import java.io.IOException;
 import java.io.PrintWriter;
 import java.sql.SQLException;
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -154,14 +156,36 @@ public class ChallengesServlet extends HttpServlet
 		}
 		
 		String sort = request.getParameter("sort");
-		String order = request.getParameter("order");
-		// for fast development, do not program in sort or limit in queries yet
+		if (sort == null) {
+			sort = "descending";
+		}
 		
+		String order = request.getParameter("order");
+		if (order == null) {
+			order = "createdAt";
+		}
+				
 		JsonArray challengesJSON = new JsonArray();
 		
 		try {
 			// get user challenges
 			List<Challenge> challenges = Challenge.getAll();
+			
+			// sort chronological order
+			if (order.equals("createdAt")) {
+				Collections.sort(challenges, new Comparator<Challenge>() {
+				    public int compare(Challenge c1, Challenge c2) {
+				        return c1.getCreateAtDate().compareTo(c2.getCreateAtDate());
+				    }
+				});
+			}
+			
+			// reverse chronological order
+			if (sort.equals("descending")) {
+				Collections.reverse(challenges);
+			}
+			
+			// serialize all challenges into the array
 			for (Challenge challenge : challenges) {
 				System.out.println(challenge.getCreateAtDate());
 				JsonElement challengeJSON = Serializer.getChallengeJSON(challenge, true);
@@ -171,6 +195,8 @@ public class ChallengesServlet extends HttpServlet
 		catch (SQLException sqle) {
 			sqle.printStackTrace();
 		}
+		
+
 		
 		JsonElement payload = challengesJSON;
 		PrintWriter out = response.getWriter();
