@@ -169,7 +169,7 @@ public class Challenge
 	{
 		if (id == null) {
 			// adding a challenge
-			long challengeId = Challenge.add(user, title, description);
+			long challengeId = Challenge.add(user, title, description,categories);
 			// update the id
 			id = challengeId;
 		}
@@ -225,15 +225,24 @@ public class Challenge
 	 * @return the id for the created challenge record
 	 * @throws SQLException
 	 */
-	public static long add (User user, String title, String description)
+	public static long add (User user, String title, String description,List<String> categories)
 	throws SQLException
 	{
+		String categoryString = "";
+		for(int i=0;i<categories.size();i++) {
+			if(!(i==categories.size()-1)) {
+				categoryString = categoryString + categories.get(i) + ",";
+
+			}else {
+				categoryString = categoryString+categories.get(i);
+			}
+		}
 		Long userId = user.getId();
-		
-		PreparedStatement ps = connection.prepareStatement("INSERT INTO " + TBL_NAME + "(userId,title,description) VALUES (?, ?, ?)", Statement.RETURN_GENERATED_KEYS);
+		PreparedStatement ps = connection.prepareStatement("INSERT INTO " + TBL_NAME + "(userId,title,description,categories) VALUES (?, ?, ?,?)", Statement.RETURN_GENERATED_KEYS);
 		ps.setLong(1, userId);
 		ps.setString(2, title);
 		ps.setString(3, description);
+		ps.setString(4, categoryString);
 		System.out.println(userId + " " + title + " " + description);
 				
 		int challengeCreated = ps.executeUpdate();

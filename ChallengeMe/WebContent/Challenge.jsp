@@ -20,8 +20,7 @@
 </style>
 <script>
 	
-	var currentUsername = "anthony";
-	
+	var currentUsername = <%= request.getSession().getAttribute("username") %>;
 	var url = new URL(window.location.href);
 	var username = url.searchParams.get("username");
 	var challengeId = url.searchParams.get("challengeId");

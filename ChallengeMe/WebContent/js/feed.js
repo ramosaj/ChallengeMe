@@ -8,7 +8,6 @@ function getChallenges ()
             if (getChallengesRequest.status === 200) {
             		var challenges = JSON.parse(getChallengesRequest.responseText);
             		// get rid of the 'Loading...' text
-            		alert("ding");
             		document.getElementById("feed").innerHTML = null;
             		// render every challenge element
             		for (var challenge of challenges) {
@@ -77,6 +76,22 @@ function createChallengeDiv (challenge)
 	
 	loadInterest(username, challenge.owner.username, challenge.id, interestedButton, null, null);
 	
+	//completed button
+	var completed = document.createElement("button");
+	completed.type = "button";
+	completed.classList.add("completed-btn");
+	completed.classList.add("btn");
+	completed.classList.add("btn-secondary");
+	var completedIcon = document.createElement("i");
+	completedIcon.classList.add("completed-btn-icon");
+	completedIcon.classList.add("fa");
+	completed.appendChild(completedIcon);
+	completed.innerHTML += " Completed";
+	
+	loadCompleted(username,challenge.owner.username,challenge.id,completed,null,null);
+	
+	
+	
 	// add all attributes to colDiv
 	colDiv.appendChild(nameHeaderLink);
 	colDiv.appendChild(usernameParagraphBolded);
@@ -85,6 +100,8 @@ function createChallengeDiv (challenge)
 	colDiv.appendChild(descriptionParagraph);
 	colDiv.appendChild(document.createElement("br"));
 	colDiv.appendChild(interestedButton);
+	colDiv.appendChild(document.createTextNode(" "));
+	colDiv.appendChild(completed);
 	
 	// add colDiv to rowDiv
 	rowDiv.appendChild(colDiv);

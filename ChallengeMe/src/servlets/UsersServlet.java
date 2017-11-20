@@ -555,10 +555,13 @@ public class UsersServlet extends HttpServlet
 	
 		String title = request.getParameter("title");
 		String description = request.getParameter("description");
+		String category = request.getParameter("categories");
+		String [] categories1 = category.split(" ");
 		List<String> categories = new ArrayList<String>();
-		//for(String element: cat) {
-		//	categories.add(element);
-	//	}
+		for(String element: categories1) {
+			categories.add(element);
+			
+		}
 		
 		
 		
@@ -566,7 +569,7 @@ public class UsersServlet extends HttpServlet
 		JsonElement createdChallengeJSON = new JsonObject();
 		try {
 			User user = User.get(username);
-			Challenge.add(user, title, description);
+			Challenge.add(user, title, description,categories);
 			// TODO: check if the user is the current session user
 			Challenge challenge = new Challenge(user, title, description, categories);
 			createdChallengeJSON = Serializer.getChallengeJSON(challenge, false);
