@@ -31,35 +31,49 @@
 
 		//Vector<Challenge> myChallenges = (Vector<Challenge>)gson.fromJson((String)session.getAttribute("challengeResult"), challengeType);
 		%>
-		
+		<h4>User Results</h4>
 		<table cellpadding="10" width="800">
+		
 			<%	
 			if (myUser != null)
 			{
 				for (int i = 0; i < myUser.size(); i ++)
 				{
-					String name = myUser.get(i).getName();
-					String username=myUser.get(i).getUsername();
+					String name=""; String username="";
+					name = myUser.get(i).getName();
+					username=myUser.get(i).getUsername();
 				%>
 				<tr>
 				
-					<td class="firstcolumn" align="center" rowspan="1" colspan="1"><%=username%></td>
+					<td class="firstcolumn" align="center" rowspan="1" colspan="1"><%=name%> <%=username%></td>
 				
 				</tr>
 				<%
 				}
 			}
-			%>
 			
+			%>
+			</table>
+				<h4>Challenge Results</h4>
+			<table>
+		
 			<%
+			System.out.println("heyo");
 			if (myChallenges != null)
 			{
+				System.out.println("wow: "+myChallenges.size());
 				for (int i = 0; i < myChallenges.size(); i ++)
 				{
 				%>
-				<tr><% 
-					String title = myChallenges.get(i).getTitle();
-					String description = myChallenges.get(i).getDescription();
+				<tr><%
+				System.out.println("in here");
+					String title="";
+					String description ="";
+					title = myChallenges.get(i).getTitle();
+					description = myChallenges.get(i).getDescription();
+					System.out.println("CHALLENGE");
+					System.out.println(description);
+					System.out.println(title);
 					%>
 					<td class="firstcolumn" align="center" rowspan="1" colspan="1"><%=title%></td>
 					<td align = "center" rowspan = "1" colspan = "1" ><%=description%></td>

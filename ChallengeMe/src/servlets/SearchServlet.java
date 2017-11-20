@@ -86,7 +86,30 @@ public class SearchServlet extends HttpServlet {
 		Gson gson = new Gson();
 		for(int i =0;i<this.displayUser.size();i++)
 		{
-			displayUser.get(i).setCreateAtDate(null);
+			this.displayUser.get(i).setCreateAtDate(null);
+		}
+		System.out.println("in cahhaha wy no change");
+		for(int i =0;i<this.displayChallenge.size();i++)
+		{
+			System.out.println("in here wy no change");
+			this.displayChallenge.get(i).setCreateAtDate(null);
+			try {
+				for(int j =0;j<this.displayChallenge.get(i).getCompletedUsers().size();j++)
+				{
+					this.displayChallenge.get(i).getCompletedUsers().get(j).setCreateAtDate(null);
+				}
+				for(int j =0;j<this.displayChallenge.get(i).getInterestedUsers().size();j++)
+				{
+					this.displayChallenge.get(i).getInterestedUsers().get(j).setCreateAtDate(null);
+				}
+				this.displayChallenge.get(i).getUser().setCreateAtDate(null);
+			} catch (SQLException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+		}
+		if(displayChallenge.get(0).getCreateAtDate()==null)
+		{
 		}
 		String sendUsers = gson.toJson(this.displayUser);
 		String sendChallenges = gson.toJson(this.displayChallenge);
@@ -94,7 +117,7 @@ public class SearchServlet extends HttpServlet {
 		request.setAttribute("challengeResult", sendChallenges);
 		System.err.println("lessgoo-bmark//t");
 		request.getSession().setAttribute("userResult", sendUsers);
-		request.getSession().setAttribute("challengeResult", sendUsers);
+		request.getSession().setAttribute("challengeResult", sendChallenges);
 		
 		PrintWriter out = response.getWriter();
 		response.setContentType("application/json");

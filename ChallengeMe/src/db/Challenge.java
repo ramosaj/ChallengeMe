@@ -125,6 +125,10 @@ public class Challenge
 	{
 		return createAt;
 	}
+	public void setCreateAtDate(Date date) 
+	{
+		createAt=null;
+	}
 
 	public List<User> getCompletedUsers ()
 	throws SQLException
