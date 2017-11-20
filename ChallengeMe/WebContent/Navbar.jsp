@@ -57,7 +57,6 @@
 function searchPressed ()
 {
 	var resultsUrl = "SearchRedirect?q=" + encodeURIComponent(document.getElementById("searchItem").value);
-	console.log(resultsUrl);
 	
 	var xhttp = new XMLHttpRequest();
 	xhttp.open("GET", resultsUrl, false);

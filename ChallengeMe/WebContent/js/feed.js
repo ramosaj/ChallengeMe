@@ -54,10 +54,7 @@ function createChallengeDiv (challenge)
 	}
 	// date
 	var dateParagraph = document.createElement("p");
-	var dateComponents = challenge.createdAt;
-	alert(typeof(challenge.createdAt));
-	
-	
+	var dateComponents = challenge.createdAt;	
 	dateParagraph.innerHTML = new Date(new Number(challenge.createdAt));
 	// description
 	var descriptionParagraph = document.createElement("p");

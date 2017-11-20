@@ -1,21 +1,9 @@
-<%@ page language="java" contentType="text/html; charset=UTF-8"
-    pageEncoding="UTF-8"%>
-    
+<%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
 <%@include file="Navbar.jsp" %>
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <title>Bootstrap Example</title>
-  <%
-  /* 	if (!request.getSession().getAttribute("Authenticated").equals("YES") ){
-		response.sendRedirect("SignLog.jsp");
-		System.out.println("Not log in, redirecting to login page");
-	} */
-  	System.out.println(request.getSession().getAttribute("username"));
-  	System.out.println(request.getSession().getAttribute("userID"));
-
-  
-  %>
+  <title>Challenges Feed</title>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
@@ -39,10 +27,18 @@
   <script src="./js/feed.js" type="text/javascript"></script>
   <script type="text/javascript">
     // Current user
-	var username = "anthony"; // XXX
-  	window.onload = getChallenges();
+	var username = "<%= session.getAttribute("username") %>";
+	console.log(username);
+	
+	// XXX - for testing purposes
+	if (username == null) {
+		username = "anthony";
+	}
+
+  	window.onload = getChallenges;
   	
-  	function addPost() {
+  	function addPost ()
+  	{
   		var title = document.getElementById("title").value;
   		var description = document.getElementById("description").value;
   		var categories = document.getElementById("categories").value;
@@ -58,17 +54,11 @@
   		challenge.onreadystatechange = function() {
   			if(this.readyState == 4 && this.status == 200){
   				getChallenges();
-  				
   			}
   		}
   		
   		challenge.send("title="+title+"&description="+descript+"&categories="+cat);
-  		
-  		
-  		
-  		
-  		
-  	}
+	}
   </script>
 </head>
 
