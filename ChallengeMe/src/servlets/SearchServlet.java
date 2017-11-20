@@ -15,105 +15,89 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import com.google.gson.Gson;
+import com.google.gson.JsonArray;
+import com.google.gson.JsonElement;
+import com.google.gson.JsonObject;
 
 import db.Challenge;
 import db.User;
 import threads.SearchChallengeThread;
 import threads.SearchUserThread;
+import util.Serializer;
 
 /**
  * Servlet implementation class tempServlet
  */
-@WebServlet("/SearchServlet")
+@WebServlet("/search")
 public class SearchServlet extends HttpServlet {
+	
 	private static final long serialVersionUID = 1L;
-	private List<User> displayUser;
-	private List<Challenge> displayChallenge;
-       
-    /**
-     * @see HttpServlet#HttpServlet()
-     */
-    public SearchServlet() {
-        super();
-        // TODO Auto-generated constructor stub
-    }
-
-	/**
-	 * @see HttpServlet#doGet(HttpServletRequest request, HttpServletResponse response)
-	 */
-	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-		String searchItem = request.getParameter("searchItem");
-		System.err.println("HI in sear: " +searchItem);
+	private List<User> searchedUsers;
+	private List<Challenge> searchedChallenges;
+	
+	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException
+	{
+		String searchItem = request.getParameter("q");
+		
 		try {
 			List<Challenge> allChallenge = Challenge.getAll();
 			List<User> allUser = User.getAll();
-		    // FutureTask is a concrete class that
-		    // implements both Runnable and Future
-		    FutureTask[] tasks = new FutureTask[2];
-		 
-		      Callable callableUser = new SearchUserThread(allUser, searchItem);
-		      Callable callableChallenge = new SearchChallengeThread(allChallenge, searchItem);
-		      // Create the FutureTask with Callable
-		      tasks[0] = new FutureTask(callableUser);
-		      tasks[1] = new FutureTask(callableChallenge);
-		 
-		      // As it implements Runnable, create Thread
-		      // with FutureTask
-		      Thread t1 = new Thread(tasks[0]);
-		      t1.start();
-		      
-		      Thread t2 = new Thread(tasks[1]);
-		      t2.start();
-		  
-			this.displayUser = (Vector<User>)tasks[0].get();
-			this.displayChallenge = (Vector<Challenge>)tasks[1].get();
-			System.err.println("SIZEMAN: "+ this.displayUser.size());
 			
-		} catch (SQLException e) {
-			System.err.println("ERROR 1");
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		} catch (InterruptedException e) {
-			System.err.println("ERROR 2");
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		} catch (ExecutionException e) {
-			System.err.println("ERROR 2");
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+			Callable<Vector<Challenge>> challengeCall = new SearchChallengeThread(allChallenge, searchItem);
+			Callable<Vector<User>> userCall = new SearchUserThread(allUser, searchItem);
+			
+			FutureTask<Vector<Challenge>> searchChallengeTask = new FutureTask<>(challengeCall);
+			Thread searchChallengeThread = new Thread(searchChallengeTask);
+			searchChallengeThread.start();
+			
+			FutureTask<Vector<User>> searchUserTask = new FutureTask<>(userCall);
+			Thread searchUserThread = new Thread(searchUserTask);
+			searchUserThread.start();
+			
+			searchedUsers = searchUserTask.get();
+			searchedChallenges = searchChallengeTask.get();
 		}
-		Gson gson = new Gson();
-		for(int i =0;i<this.displayUser.size();i++)
-		{
-			displayUser.get(i).setCreateAtDate(null);
+		catch (SQLException sqle) {
+			sqle.printStackTrace();
 		}
-		String sendUsers = gson.toJson(this.displayUser);
-		String sendChallenges = gson.toJson(this.displayChallenge);
-		request.setAttribute("userResult", sendUsers);
-		request.setAttribute("challengeResult", sendChallenges);
-		System.err.println("lessgoo-bmark//t");
-		request.getSession().setAttribute("userResult", sendUsers);
-		request.getSession().setAttribute("challengeResult", sendUsers);
+		catch (InterruptedException ie) {
+			ie.printStackTrace();
+		}
+		catch (ExecutionException ee) {
+			ee.printStackTrace();
+		}
+
+		// serialize!
+		JsonArray challengesJSON = new JsonArray();
+		JsonArray usersJSON = new JsonArray();
+		
+		try {
+			// serialize all challenges into the array
+			for (Challenge challenge : searchedChallenges) {
+				JsonElement challengeJSON = Serializer.getChallengeJSON(challenge, true);
+				challengesJSON.add(challengeJSON);
+			}
+			
+			// get users
+			for (User user : searchedUsers) {
+				JsonElement userJSON = Serializer.getUserJSON(user);
+				usersJSON.add(userJSON);
+			}
+		}
+		catch (SQLException sqle) {
+			sqle.printStackTrace();
+		}
+		
+		
+		JsonObject payload = new JsonObject();
+		payload.add("users", usersJSON);
+		payload.add("challenges", challengesJSON);
 		
 		PrintWriter out = response.getWriter();
 		response.setContentType("application/json");
 		response.setStatus(HttpServletResponse.SC_OK);
-		out.print(sendUsers+"^"+sendChallenges);
-		out.flush();/*
-		System.err.println("re-bmark//t");
-		String url = "/ChallengeMe/Results.jsp";
-		System.out.println("URL: "+url);
-		request.getRequestDispatcher(url).forward(request, response);
-		System.err.println("bomaarkb//00");*/
-	}
-
-	/**
-	 * @see HttpServlet#doPost(HttpServletRequest request, HttpServletResponse response)
-	 */
-	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-		// TODO Auto-generated method stub
-		doGet(request, response);
+		out.print(payload.toString());
+		out.flush();
 	}
 
 }

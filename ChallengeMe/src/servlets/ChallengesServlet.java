@@ -187,7 +187,6 @@ public class ChallengesServlet extends HttpServlet
 			
 			// serialize all challenges into the array
 			for (Challenge challenge : challenges) {
-				System.out.println(challenge.getCreateAtDate());
 				JsonElement challengeJSON = Serializer.getChallengeJSON(challenge, true);
 				challengesJSON.add(challengeJSON);
 			}

@@ -9,6 +9,7 @@
 <script src="./js/userInterest.js" type="text/javascript"></script>
 <script src="./js/userCompletion.js" type="text/javascript"></script>
 <script src="./js/challenge.js" type="text/javascript"></script>
+<script src="./js/util.js" type="text/javascript"></script>
 <style>
 .challenge-tag {
   padding: 4px;

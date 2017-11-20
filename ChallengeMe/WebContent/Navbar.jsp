@@ -14,22 +14,6 @@
     font-size: 36px;
   }
   </style>
-  <script>
-	var socket;
-	function connectToServer() {
-		socket = new WebSocket("ws://localhost:8080/ChallengeMe/ws");
-		socket.onopen = function(event) {
-		}
-		socket.onmessage = function(event) {
-			document.getElementById("mychat").innerHTML += event.data + "<br />";
-		}
-		socket.onclose = function(event) {
-		}
-	}
-
-
-  </script>
-  <script src="./js/search.js" type="text/javascript"></script>
 </script>
 </head>
 <body onload="">
@@ -70,18 +54,14 @@
   </nav>
 </body>
 <script type="text/javascript">
-
-function searchPressed() {
+function searchPressed ()
+{
+	var resultsUrl = "SearchRedirect?q=" + encodeURIComponent(document.getElementById("searchItem").value);
+	console.log(resultsUrl);
+	
 	var xhttp = new XMLHttpRequest();
-	var requeststr = "SearchServlet?searchItem="+$("#searchItem").val();
-	xhttp.open("POST", requeststr, false);
+	xhttp.open("GET", resultsUrl, false);
 	xhttp.send();
-	if(xhttp.responseText.trim().length > 0) {
-		alert(xhttp.responseText);
-// 		var result=xhttp.responseText;
-// 		var splitRes = result.split("^");
-		return true;
-	}
 }
 </script>
 
