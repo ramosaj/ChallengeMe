@@ -34,8 +34,8 @@
 	}
   </style>
   <script src="./js/util.js" type="text/javascript"></script>
-  <script src="./js/completed.js" type="text/javascript"></script>
   <script src="./js/userInterest.js" type="text/javascript"></script>
+  <script src="./js/userCompletion.js" type="text/javascript"></script>
   <script src="./js/feed.js" type="text/javascript"></script>
   <script type="text/javascript">
     // Current user

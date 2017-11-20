@@ -63,6 +63,7 @@ function createChallengeDiv (challenge)
 	// description
 	var descriptionParagraph = document.createElement("p");
 	descriptionParagraph.innerHTML = challenge.description;
+	
 	// interested button
 	var interestedButton = document.createElement("button");
 	interestedButton.type = "button";
@@ -74,23 +75,21 @@ function createChallengeDiv (challenge)
 	interestedButtonIcon.classList.add("fa");
 	interestedButton.appendChild(interestedButtonIcon);
 	interestedButton.innerHTML += " Interested";
-	
 	loadInterest(username, challenge.owner.username, challenge.id, interestedButton, null, null);
-	
-	//completed button
-	var completed = document.createElement("button");
-	completed.type = "button";
-	completed.classList.add("completed-btn");
-	completed.classList.add("btn");
-	completed.classList.add("btn-secondary");
-	var completedIcon = document.createElement("i");
-	completedIcon.classList.add("completed-btn-icon");
-	completedIcon.classList.add("fa");
-	completed.appendChild(completedIcon);
-	completed.innerHTML += " Completed";
-	
-	loadCompleted(username,challenge.owner.username,challenge.id,completed,null,null);
-	
+
+	// completed button
+	var completedButton = document.createElement("button");
+	completedButton.type = "button";
+	completedButton.classList.add("completed-btn");
+	completedButton.classList.add("btn");
+	completedButton.classList.add("btn-secondary");
+	var completedButtonIcon = document.createElement("i");
+	completedButtonIcon.classList.add("completed-btn-icon");
+	completedButtonIcon.classList.add("fa");
+	completedButtonIcon.classList.add("fa-check");	
+	completedButton.appendChild(completedButtonIcon);
+	completedButton.innerHTML += " Completed";
+	loadCompletion(username, challenge.owner.username, challenge.id, completedButton, null, null);
 	
 	
 	// add all attributes to colDiv
@@ -102,7 +101,7 @@ function createChallengeDiv (challenge)
 	colDiv.appendChild(document.createElement("br"));
 	colDiv.appendChild(interestedButton);
 	colDiv.appendChild(document.createTextNode(" "));
-	colDiv.appendChild(completed);
+	colDiv.appendChild(completedButton);
 	
 	// add colDiv to rowDiv
 	rowDiv.appendChild(colDiv);
