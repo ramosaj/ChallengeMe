@@ -31,8 +31,8 @@
 	console.log(username);
 	
 	// XXX - for testing purposes
-	if (username == null) {
-		username = "anthony";
+	if (username == "null") {
+		username = "guest";
 	}
 
   	window.onload = getChallenges;

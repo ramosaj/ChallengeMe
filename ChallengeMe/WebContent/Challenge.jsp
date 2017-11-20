@@ -21,68 +21,83 @@
 }
 </style>
 <script>
-	var currentUsername = <%= request.getSession().getAttribute("username") %>;
+	var currentUsername = "<%= request.getSession().getAttribute("username") %>";
+	
+	// XXX - for testing purposes
+	if (currentUsername == "null") {
+		currentUsername = "guest";
+	}
+	
 	var url = new URL(window.location.href);
 	var username = url.searchParams.get("username");
 	var challengeId = url.searchParams.get("challengeId");
 	
 	var viewsSocket;
 	window.onload = function() {
-		loadInterest(
-			currentUsername, username, challengeId,
-			document.getElementsByClassName(INTERESTED_BTN_CNAME)[0],
-			function () {
-				// Remove user from the interested users column
-            	for (var div of document.getElementsByClassName("interested-user")) {
-            		if (div.dataset.username == currentUsername) {
-            			div.parentElement.removeChild(div);
-            			break;
-            		}
-            	}
-            	// Decrement count
-        		var interestedUsersCountEl = document.getElementById("interested-users-count");
-        		interestedUsersCountEl.dataset.value = parseInt(interestedUsersCountEl.dataset.value) - 1;
-        		interestedUsersCountEl.innerHTML = interestedUsersCountEl.dataset.value;
-			},
-			function () {
-	        	// Add user to the interested users column
-	        	var user = getUser(currentUsername);
-	        	var userDiv = createUserDiv(user, "interested-user");
-				document.getElementById("interested-users").appendChild(userDiv);
-	        	// Increment count
-	    		var interestedUsersCountEl = document.getElementById("interested-users-count");
-	    		interestedUsersCountEl.dataset.value = parseInt(interestedUsersCountEl.dataset.value) + 1;
-	    		interestedUsersCountEl.innerHTML = interestedUsersCountEl.dataset.value;
-			}
-		);
+		// the buttons
+		var interestedButton = document.getElementsByClassName(INTERESTED_BTN_CNAME)[0];
+		var completedButton = document.getElementsByClassName(COMPLETED_BTN_CNAME)[0];
 		
-		loadCompletion(
-			currentUsername, username, challengeId,
-			document.getElementsByClassName(COMPLETED_BTN_CNAME)[0],
-			function () {
-				// Remove user from the interested users column
-            	for (var div of document.getElementsByClassName("completed-user")) {
-            		if (div.dataset.username == currentUsername) {
-            			div.parentElement.removeChild(div);
-            			break;
-            		}
-            	}
-            	// Decrement count
-        		var completedUsersCountEl = document.getElementById("completed-users-count");
-        		completedUsersCountEl.dataset.value = parseInt(completedUsersCountEl.dataset.value) - 1;
-        		completedUsersCountEl.innerHTML = completedUsersCountEl.dataset.value;
-			},
-			function () {
-	        	// Add user to the completed users column
-	        	var user = getUser(currentUsername);
-	        	var userDiv = createUserDiv(user, "completed-user");
-				document.getElementById("completed-users").appendChild(userDiv);
-	        	// Increment count
-	    		var completedUsersCountEl = document.getElementById("completed-users-count");
-	    		completedUsersCountEl.dataset.value = parseInt(completedUsersCountEl.dataset.value) + 1;
-	    		completedUsersCountEl.innerHTML = completedUsersCountEl.dataset.value;
-			}
-		);
+		if (currentUsername != "guest") {
+			loadInterest(
+				currentUsername, username, challengeId, interestedButton,
+				function () {
+					// Remove user from the interested users column
+	            	for (var div of document.getElementsByClassName("interested-user")) {
+	            		if (div.dataset.username == currentUsername) {
+	            			div.parentElement.removeChild(div);
+	            			break;
+	            		}
+	            	}
+	            	// Decrement count
+	        		var interestedUsersCountEl = document.getElementById("interested-users-count");
+	        		interestedUsersCountEl.dataset.value = parseInt(interestedUsersCountEl.dataset.value) - 1;
+	        		interestedUsersCountEl.innerHTML = interestedUsersCountEl.dataset.value;
+				},
+				function () {
+		        	// Add user to the interested users column
+		        	var user = getUser(currentUsername);
+		        	var userDiv = createUserDiv(user, "interested-user");
+					document.getElementById("interested-users").appendChild(userDiv);
+		        	// Increment count
+		    		var interestedUsersCountEl = document.getElementById("interested-users-count");
+		    		interestedUsersCountEl.dataset.value = parseInt(interestedUsersCountEl.dataset.value) + 1;
+		    		interestedUsersCountEl.innerHTML = interestedUsersCountEl.dataset.value;
+				}
+			);
+			
+			loadCompletion(
+				currentUsername, username, challengeId, completedButton,
+				function () {
+					// Remove user from the interested users column
+	            	for (var div of document.getElementsByClassName("completed-user")) {
+	            		if (div.dataset.username == currentUsername) {
+	            			div.parentElement.removeChild(div);
+	            			break;
+	            		}
+	            	}
+	            	// Decrement count
+	        		var completedUsersCountEl = document.getElementById("completed-users-count");
+	        		completedUsersCountEl.dataset.value = parseInt(completedUsersCountEl.dataset.value) - 1;
+	        		completedUsersCountEl.innerHTML = completedUsersCountEl.dataset.value;
+				},
+				function () {
+		        	// Add user to the completed users column
+		        	var user = getUser(currentUsername);
+		        	var userDiv = createUserDiv(user, "completed-user");
+					document.getElementById("completed-users").appendChild(userDiv);
+		        	// Increment count
+		    		var completedUsersCountEl = document.getElementById("completed-users-count");
+		    		completedUsersCountEl.dataset.value = parseInt(completedUsersCountEl.dataset.value) + 1;
+		    		completedUsersCountEl.innerHTML = completedUsersCountEl.dataset.value;
+				}
+			);
+		}
+		else {
+			// disable the buttons
+			interestedButton.classList.add("disabled");
+			completedButton.classList.add("disabled");
+		}
 		
 		viewsSocket = new WebSocket("ws://localhost:8080/ChallengeMe/views");
 		viewsSocket.onopen = function(event) {
@@ -119,7 +134,7 @@
         <span class="views-count"></span>
       </button>
       <button type="button" class="interested-btn btn btn-secondary">
-        <i class="interested-btn-icon fa"></i> Interested
+        <i class="interested-btn-icon fa fa-star"></i> Interested
       </button>
       <button type="button" class="completed-btn btn btn-secondary">
         <i class="completed-btn-icon fa fa-check"></i> Completed

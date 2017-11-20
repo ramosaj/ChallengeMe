@@ -101,9 +101,16 @@ function createChallengeDiv (challenge)
 	var interestedButtonIcon = document.createElement("i");
 	interestedButtonIcon.classList.add("interested-btn-icon");
 	interestedButtonIcon.classList.add("fa");
+	interestedButtonIcon.classList.add("fa-star");
 	interestedButton.appendChild(interestedButtonIcon);
 	interestedButton.innerHTML += " Interested";
-	loadInterest(username, challenge.owner.username, challenge.id, interestedButton, null, null);
+	
+	if (username == "guest") {
+		interestedButton.classList.add("disabled");
+	}
+	else {
+		loadInterest(username, challenge.owner.username, challenge.id, interestedButton, null, null);
+	}
 
 	// completed button
 	var completedButton = document.createElement("button");
@@ -117,7 +124,13 @@ function createChallengeDiv (challenge)
 	completedButtonIcon.classList.add("fa-check");	
 	completedButton.appendChild(completedButtonIcon);
 	completedButton.innerHTML += " Completed";
-	loadCompletion(username, challenge.owner.username, challenge.id, completedButton, null, null);
+	
+	if (username == "guest") {
+		completedButton.classList.add("disabled");
+	}
+	else {
+		loadCompletion(username, challenge.owner.username, challenge.id, interestedButton, null, null);
+	}
 	
 	// add all attributes to colDiv
 	colDiv.appendChild(nameHeaderLink);

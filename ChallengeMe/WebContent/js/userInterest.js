@@ -37,9 +37,9 @@ function loadInterest (username, ownername, challengeId, interestedButtonEl, del
 
 function toggleInterestedButton (username, ownername, challengeId, interestedButtonEl, deleteInterestCallback, presentInterestCallback)
 {
-	var interestedButtonIconEl = interestedButtonEl.getElementsByClassName(INTERESTED_BTN_ICON_CNAME)[0];
-	interestedButtonIconEl.classList.remove("fa-star");
-	interestedButtonIconEl.classList.add("fa-check");
+//	var interestedButtonIconEl = interestedButtonEl.getElementsByClassName(INTERESTED_BTN_ICON_CNAME)[0];
+//	interestedButtonIconEl.classList.remove("fa-star");
+//	interestedButtonIconEl.classList.add("fa-check");
 	
 	interestedButtonEl.classList.remove("btn-secondary");
 	interestedButtonEl.classList.add("btn-primary");
@@ -51,9 +51,9 @@ function toggleInterestedButton (username, ownername, challengeId, interestedBut
 
 function toggleUninterestedButton (username, ownername, challengeId, interestedButtonEl, deleteInterestCallback, presentInterestCallback)
 {
-	var interestedButtonIconEl = interestedButtonEl.getElementsByClassName(INTERESTED_BTN_ICON_CNAME)[0];
-	interestedButtonIconEl.classList.remove("fa-check");
-	interestedButtonIconEl.classList.add("fa-star");
+//	var interestedButtonIconEl = interestedButtonEl.getElementsByClassName(INTERESTED_BTN_ICON_CNAME)[0];
+//	interestedButtonIconEl.classList.remove("fa-check");
+//	interestedButtonIconEl.classList.add("fa-star");
 	
 	interestedButtonEl.classList.remove("btn-primary");
 	interestedButtonEl.classList.add("btn-secondary");
