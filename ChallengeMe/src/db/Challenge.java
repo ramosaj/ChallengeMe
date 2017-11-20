@@ -228,22 +228,13 @@ public class Challenge
 	public static long add (User user, String title, String description,List<String> categories)
 	throws SQLException
 	{
-		String categoryString = "";
-		for(int i=0;i<categories.size();i++) {
-			if(!(i==categories.size()-1)) {
-				categoryString = categoryString + categories.get(i) + ",";
-
-			}else {
-				categoryString = categoryString+categories.get(i);
-			}
-		}
+		String categoryString = String.join(", ", categories);
 		Long userId = user.getId();
 		PreparedStatement ps = connection.prepareStatement("INSERT INTO " + TBL_NAME + "(userId,title,description,categories) VALUES (?, ?, ?,?)", Statement.RETURN_GENERATED_KEYS);
 		ps.setLong(1, userId);
 		ps.setString(2, title);
 		ps.setString(3, description);
 		ps.setString(4, categoryString);
-		System.out.println(userId + " " + title + " " + description);
 				
 		int challengeCreated = ps.executeUpdate();
 		assert (challengeCreated == 0 || challengeCreated == 1);
