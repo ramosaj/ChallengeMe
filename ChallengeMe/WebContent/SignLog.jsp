@@ -127,7 +127,7 @@
             
             <input type="submit" name="signup" value="SIGN UP NOW">
         </form>
-        <div id="err_message"></div>
+        <div id="err_message" align="center" style="color:#0000FF"></div>
 
     </body>
 </html>

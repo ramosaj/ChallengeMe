@@ -1,4 +1,3 @@
-
 <%@ page language="java" contentType="text/html; charset=UTF-8"
     pageEncoding="UTF-8"%>
     
@@ -73,8 +72,7 @@
   </script>
 </head>
 
-<body onload="getChallenges()">
-
+<body>
 <div class="container text-center">    
   <div class="row">
     <div class="col-sm-3">

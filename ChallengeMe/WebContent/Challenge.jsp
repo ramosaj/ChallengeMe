@@ -34,7 +34,7 @@
 			document.getElementsByClassName(INTERESTED_BTN_CNAME)[0],
 			function () {
 				// Remove user from the interested users column
-            	for (var div in document.getElementsByClassName("interested-user")) {
+            	for (var div of document.getElementsByClassName("interested-user")) {
             		if (div.dataset.username == currentUsername) {
             			div.parentElement.removeChild(div);
             			break;

@@ -54,11 +54,12 @@ function createChallengeDiv (challenge)
 	}
 	// date
 	var dateParagraph = document.createElement("p");
-	var date = challenge.createdAt.split(" ");
-	var day = new Date(date[0]).toLocaleDateString();
-	var time = new Date(date[1]).toLocaleTimeString();
-	
-	dateParagraph.innerHTML = "created on: " + day + " at " + time;
+	var dateComponents = challenge.createdAt.split(" ");
+	var month = dateComponents[1];
+	var day = dateComponents[2];
+	var time = dateComponents[3];
+	var year = dateComponents[5];
+	dateParagraph.innerHTML = "Created: " + month + " " + day + ", " + year + " at " + time;
 	// description
 	var descriptionParagraph = document.createElement("p");
 	descriptionParagraph.innerHTML = challenge.description;

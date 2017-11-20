@@ -1,12 +1,12 @@
 package threads;
 
-import java.util.ArrayList;
 import java.util.List;
+import java.util.Vector;
 import java.util.concurrent.Callable;
 
 import db.Challenge;
 
-public class SearchChallengeThread implements Callable<List<Challenge>> {
+public class SearchChallengeThread implements Callable<Vector<Challenge>> {
 	private List<Challenge> allChallenge;
 	private String searchItem;
 	public SearchChallengeThread(List<Challenge> allChallenge, String searchItem) {
@@ -15,21 +15,27 @@ public class SearchChallengeThread implements Callable<List<Challenge>> {
 	}
 
 	@Override
-	public List<Challenge> call() throws Exception {
-		List<Challenge> retval = new ArrayList<>();
+	public Vector<Challenge> call() throws Exception {
+		Vector<Challenge> retval = new Vector<>();
+		outterLoop:
 		for (Challenge challenge : this.allChallenge) {
+			System.out.println(challenge.getDescription());
 			if (challenge.getCategories() != null) {
-				System.out.println(challenge.getCategories());
-				System.out.println(this.searchItem);
 				for (String cat : challenge.getCategories()) {
 					if (cat.toLowerCase().contains(this.searchItem)) {
 						retval.add(challenge);
+						continue outterLoop;
 					}
 				}
-			} else if (challenge.getTitle().contains(this.searchItem)) {
+				
+			}
+			if (challenge.getTitle().contains(this.searchItem)) {
 				retval.add(challenge);
-			} else if (challenge.getDescription().contains(this.searchItem)) {
+				continue;
+			}
+			if (challenge.getDescription().contains(this.searchItem)) {
 				retval.add(challenge);
+				continue;
 			}
 		}
 		return retval;

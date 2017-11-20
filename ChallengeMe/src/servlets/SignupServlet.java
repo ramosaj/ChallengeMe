@@ -34,13 +34,16 @@ public class SignupServlet extends HttpServlet {
 		catch (SQLException sqle) {
 			sqle.printStackTrace();
 		}
-		finally {
-			userExists = false;
-		}
+//		finally {
+//			userExists = false;
+//		}
 		
 		if (userExists) {
-			request.setAttribute("errmsg", "Invalid username");
+//			request.setAttribute("errmsg", "Invalid username");
 			// response.sendRedirect("SignLog.jsp");
+			String content = "Username already exists.";
+			response.setContentType("text/json");
+            response.getWriter().print(content);
 		}
 		else {
 			try {

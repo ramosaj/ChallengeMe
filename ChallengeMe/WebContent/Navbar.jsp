@@ -73,7 +73,7 @@
 
 $("form").submit(function (event) {
     event.preventDefault();
-    $.get('SearchServlet', {searchItem : $("#searchItem").text()});
+    $.get('SearchServlet', {searchItem : $("#searchItem").val()});
 })
 </script>
 
