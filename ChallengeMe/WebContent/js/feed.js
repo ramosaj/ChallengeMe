@@ -113,17 +113,17 @@ function createChallengeDiv (challenge)
 	}
 
 	// completed button
-	var completedButton = document.createElement("button");
-	completedButton.type = "button";
-	completedButton.classList.add("completed-btn");
-	completedButton.classList.add("btn");
-	completedButton.classList.add("btn-secondary");
-	var completedButtonIcon = document.createElement("i");
-	completedButtonIcon.classList.add("completed-btn-icon");
-	completedButtonIcon.classList.add("fa");
-	completedButtonIcon.classList.add("fa-check");	
-	completedButton.appendChild(completedButtonIcon);
-	completedButton.innerHTML += " Completed";
+		var completedButton = document.createElement("button");
+		completedButton.type = "button";
+		completedButton.classList.add("completed-btn");
+		completedButton.classList.add("btn");
+		completedButton.classList.add("btn-secondary");
+		var completedButtonIcon = document.createElement("i");
+		completedButtonIcon.classList.add("completed-btn-icon");
+		completedButtonIcon.classList.add("fa");
+		completedButtonIcon.classList.add("fa-check");	
+		completedButton.appendChild(completedButtonIcon);
+		completedButton.innerHTML += " Completed";
 	
 	if (username == "guest") {
 		completedButton.classList.add("disabled");

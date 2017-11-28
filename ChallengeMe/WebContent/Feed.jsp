@@ -35,7 +35,19 @@
 		username = "guest";
 	}
 
-  	window.onload = getChallenges;
+  	window.onload = function() {
+  		getChallenges();
+  		var username = "<%= request.getSession().getAttribute("username") %>"
+		if(username == "guest"){
+			var profile = document.getElementsByClassName("profile");
+			for(var i=0;i<profile.length;i++){
+				profile[i].style.display="none";
+			}
+			var sub = document.getElementById("submit").disabled=true;
+			 
+			
+		}
+  	}
   	
   	function addPost ()
   	{
@@ -79,7 +91,7 @@
             <textarea class="form-control" id="description" placeholder="Description"></textarea>
             <br />
             <textarea class="form-control" id="categories" placeholder="Enter categories"></textarea>
-            <input type="submit" class="form-control">
+            <input type="submit" id="submit" class="form-control">
           </form>
         </div> 
       </div>
