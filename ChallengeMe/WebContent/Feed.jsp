@@ -17,9 +17,31 @@
       padding: 15px;
     }
     
+  
+    
 	.fa-check, .fa-star, .fa-eye {
 	  font-size: 20px;
 	}
+	
+	.btn {
+		border-radius:0;
+	
+	}
+	.well{
+		border-radius:0;
+		border: 2px solid black;
+		background-color: white;
+		color: black;
+		font-family:"Courier New";
+	}
+	
+	.name {
+		background-color:black;
+		color:white;
+		
+		
+	}
+	
   </style>
   <script src="./js/util.js" type="text/javascript"></script>
   <script src="./js/userInterest.js" type="text/javascript"></script>
@@ -72,6 +94,18 @@
   		challenge.send("title="+title+"&description="+descript+"&categories="+cat);
 	}
   </script>
+  <style>
+  .bg-dark{
+  	background-color:#000000;
+  	border-radius:0;
+  	
+  	
+  
+  
+  }
+  
+  
+  </style>
 </head>
 
 <body>
@@ -122,9 +156,6 @@
   </div>
 </div>
 
-<footer class="container-fluid text-center">
-  <p>Footer Text</p>
-</footer>
 
 </body>
 </html>

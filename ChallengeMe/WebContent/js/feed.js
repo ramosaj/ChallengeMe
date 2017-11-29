@@ -46,6 +46,7 @@ function createChallengeDiv (challenge)
 	nameHeaderLink.appendChild(nameLink);
 	// username
 	var usernameParagraph = document.createElement("p");
+	usernameParagraph.classList.add("name");
 	usernameParagraph.innerHTML = "@" + challenge.owner.username;
 	var usernameParagraphBolded = document.createElement("b");
 	usernameParagraphBolded.appendChild(usernameParagraph);
