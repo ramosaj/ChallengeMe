@@ -20,8 +20,9 @@
 	</style>
 	<script type="text/javascript">		
 		var url = new URL(window.location.href);
-		var username = url.searchParams.get("username");
-		
+		/* var username = url.searchParams.get("username"); */
+		var username = "<%= session.getAttribute("username") %>";
+		console.log(username);
 		if (username == null) {
 			// by default it is the own's user
 			username = "<%= session.getAttribute("username") %>";
