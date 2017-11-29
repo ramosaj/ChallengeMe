@@ -6,6 +6,7 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
 
@@ -316,7 +317,12 @@ public class Challenge
 		}
 		// TODO: get categories
 		List<String> categories = new ArrayList<>();
-		
+//		System.out.println(rs.getString("categories"));
+		String catString = rs.getString("categories");
+		if(catString == null) {
+			catString = "";
+		}
+		categories = new ArrayList<String>(Arrays.asList(catString.split(",")));
 		Challenge challenge = null;
 		
 		if (lazyLoad) {

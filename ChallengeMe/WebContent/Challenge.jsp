@@ -70,7 +70,7 @@
 				currentUsername, username, challengeId, completedButton,
 				function () {
 					// Remove user from the interested users column
-	            	for (var div of document.getElementsByClassName("completed-user")) {
+	            	for (var div in document.getElementsByClassName("completed-user")) {
 	            		if (div.dataset.username == currentUsername) {
 	            			div.parentElement.removeChild(div);
 	            			break;

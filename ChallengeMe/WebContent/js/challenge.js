@@ -34,7 +34,8 @@ function loadChallenge (username, challengeId)
         		document.getElementById("date-value").innerHTML = new Date(new Number(challenge.createdAt));
         		
         		// XXX: populate categories
-        		challenge.categories = ["creative", "interesting"];
+//        		challenge.categories = ["creative", "interesting"];
+        		
         		for (var category of challenge.categories) {
         			var categoryTag = document.createElement("span")
         			categoryTag.classList.add("challenge-tag");
