@@ -14,7 +14,6 @@
     font-size: 36px;
   }
   </style>
-</script>
 </head>
 <body onload="">
   <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
@@ -24,9 +23,9 @@
           <i class="fa fa-home" aria-hidden="true"></i>
         </a>
       </li>
-      <li class="nav-item">
-        <a class="nav-link" href="Profile.jsp">
-          <i class="fa fa-user" aria-hidden="true"></i>
+      <li class="nav-item profile">
+        <a class="nav-link profile" href="Profile.jsp">
+          <i class="fa fa-user profile" aria-hidden="true"></i>
         </a>
       </li>
       <!--

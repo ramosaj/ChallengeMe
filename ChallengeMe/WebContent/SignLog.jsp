@@ -1,4 +1,5 @@
 
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -26,6 +27,12 @@
         	
         		var username = document.loginform.username.value;
         		var password = document.loginform.password.value;
+        		
+        		if(username.length == 0 && password.length==0){
+        			username="Guest";
+        			password="Guest"
+        		}
+        		
         		
         		/* window.alert(username + " " + password); */
         		if (username.length == 0 || password.length == 0)

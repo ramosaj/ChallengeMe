@@ -139,6 +139,8 @@ public class UsersServlet extends HttpServlet
 		// url mapping
 		String pathInfo = request.getPathInfo();
 		PathExtractor extractor = new PathExtractor(pathInfo);
+		System.out.println(extractor.ownername);
+		System.out.println(extractor.challengeId);
 		
 		try {
 			// POST /users/:username/challenges
@@ -569,6 +571,7 @@ public class UsersServlet extends HttpServlet
 		JsonElement createdChallengeJSON = new JsonObject();
 		try {
 			User user = User.get(username);
+			System.out.println("Attempting to create challenge . .. ");
 			Challenge.add(user, title, description,categories);
 			// TODO: check if the user is the current session user
 			Challenge challenge = new Challenge(user, title, description, categories);
