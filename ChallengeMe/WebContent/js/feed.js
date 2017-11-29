@@ -129,7 +129,7 @@ function createChallengeDiv (challenge)
 		completedButton.classList.add("disabled");
 	}
 	else {
-		loadCompletion(username, challenge.owner.username, challenge.id, interestedButton, null, null);
+		loadCompletion(username, challenge.owner.username, challenge.id, completedButton, null, null);
 	}
 	
 	// add all attributes to colDiv
