@@ -13,13 +13,32 @@
   .fa {
     font-size: 36px;
   }
+  body {
+  	font-family:"Courier New";
+
+
+  }
+  
+  .corner,.btn{
+  		border-radius:0px !important;
+  
+  }
+  
+  .navbar-dark{
+  	background-color: #000000 !important;
+  
+  }
+  
+  
+  
+  
   
   </style>
 </head>
 <body onload="">
   <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
     <ul class="navbar-nav">
-      <li class="nav-item active">
+      <li class="nav-item">
         <a class="nav-link" href="Feed.jsp">
           <i class="fa fa-home" aria-hidden="true"></i>
         </a>
@@ -43,7 +62,7 @@
     </ul>
     <form class="navbar-form" action="Results.jsp" method="POST" onsubmit ="return searchPressed();" role="search" >
       <div class="input-group">
-        <input id="searchItem" type="text" class="form-control" placeholder="Search...">
+        <input id="searchItem" type="text" class="form-control corner" placeholder="Search...">
         <span class="input-group-btn">
           <button type="submit" class="btn btn-default">
           	<i class="fa fa-search" aria-hidden="true" style="font-size: 20px;"></i>

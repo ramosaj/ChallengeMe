@@ -13,9 +13,27 @@
 		margin-bottom: 0;
 		border-radius: 0%;
 	}
+	.well {
+		color:white;
+		background-color:black;
+	
+	
+	}
+	
+	.col {
+		border:2px solid black;
+		margin: 5px;
+	
+	}
+	
+	
 	
 	#user-info {
 		padding-left: 40px;
+	}
+	
+	body {
+		font-family:"Courier New";
 	}
 	</style>
 	<script type="text/javascript">		

@@ -95,14 +95,33 @@
 	}
   </script>
   <style>
-  .bg-dark{
-  	background-color:#000000;
-  	border-radius:0;
-  	
-  	
-  
-  
-  }
+  .form-control {
+			width:50%;
+			margin:auto;
+			border-radius:0;
+			border-bottom: 2px solid #000000;
+			border-left: none;
+			border-right: none;
+			border-top:none;
+			
+		
+		}
+		
+	#submit:active{
+			background-color:black;
+			color:white;
+			
+		}
+		
+		#submit{
+			border: 2px solid #000000;
+		
+		}
+		
+		.form-control:focus{
+			box-shadow: none;
+			border-bottom: 2px solid red;
+		}
   
   
   </style>
@@ -124,7 +143,7 @@
             Description:
             <textarea class="form-control" id="description" placeholder="Description"></textarea>
             <br />
-            <textarea class="form-control" id="categories" placeholder="Enter categories"></textarea>
+            <textarea class="form-control" id="categories" placeholder="Enter categories"></textarea><br />
             <input type="submit" id="submit" class="form-control">
           </form>
         </div> 

@@ -1,8 +1,50 @@
 
-
 <!DOCTYPE html>
 <html lang="en">
 <head>
+	<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-beta.2/css/bootstrap.min.css" integrity="sha384-PsH8R72JQ3SOdhVi3uxftmaW6Vc51MKb0q5P2rRUpPvrszuE4W1povHYgTpBfshb" crossorigin="anonymous">
+	<style> 
+		body{
+			font-family:"Courier New";
+		
+		}
+		.form-control {
+			width:50%;
+			margin:auto;
+			border-radius:0;
+			border-bottom: 2px solid #000000;
+			border-left: none;
+			border-right: none;
+			border-top:none;
+			
+		
+		}
+		
+		.form-control:focus{
+			box-shadow: none;
+			border-bottom: 2px solid red;
+		}
+		
+		.submit:active{
+			background-color:black;
+			color:white;
+			
+		}
+		
+		.submit{
+			border: 2px solid #000000;
+		
+		}
+		
+		.btn {
+			border-radius:0;
+			background-color:white;
+			border: 2px solid #000000;
+		}
+		
+		
+		 
+	</style>
     <meta charset="UTF-8">
     <title>Log In Page</title>
     <script>
@@ -111,28 +153,29 @@
     <body onload = "load()">
         <h1 align = "center"> Challenge Me </h1>
         <div id="buttons" align="center">
-            <button onclick="loginButtonPressed()" name="loginButton" value="LOG IN" id="loginButton">LOG IN</button>
-            <button onclick="signupButtonPressed()" name="loginButton" value="SIGN UP">SIGN UP</button>
+            <button onclick="loginButtonPressed()" class="submit btn" name="loginButton" value="LOG IN" id="loginButton">LOG IN</button>
+            <button onclick="signupButtonPressed()" class="submit btn" name="loginButton" value="SIGN UP">SIGN UP</button>
+            <br />
         </div>
-
+		<br />
         <form id="loginform" name = "loginform" method="POST" align="center" action="Feed.jsp" onsubmit ="return loginPressed();">
             <!-- <h6>Login</h6> -->
-            <input type="text" name="username" placeholder="USERNAME"/><br />
-            <input type="password" name="password" placeholder="PASSWORD" /><br />
-            <input type="submit" name="login" value="LOG IN">
+            <input type="text" class="form-control" name="username" placeholder="USERNAME"/><br />
+            <input type="password" class="form-control" name="password" placeholder="PASSWORD" /><br />
+            <input type="submit" class="form-control submit" name="login" value="LOG IN">
         </form>
         <form id="signupform" name="signupform" method="POST" align="center" onsubmit="return signupPressed();" action="SignLog.jsp">
             <!-- <h6>Signup</h6> -->
-            <input type="text" name="fname" placeholder="FIRST NAME"/><br />
-            <input type="text" name="lname" placeholder="LAST NAME"/><br />
-            <input type="text" name="username" placeholder="USERNAME"/><br />
+            <input type="text" class="form-control" name="fname" placeholder="FIRST NAME"/><br />
+            <input type="text" class="form-control" name="lname" placeholder="LAST NAME"/><br />
+            <input type="text" class="form-control" name="username" placeholder="USERNAME"/><br />
             
-            <input type="email" name="email" placeholder="EMAIL" /><br />
+            <input type="email" class="form-control" name="email" placeholder="EMAIL" /><br />
             
-            <input type="text" name="password" placeholder="ENTER PASSWORD" /><br />
-            <input type="text" name="reenterpassword" placeholder="RE-ENTER PASSWORD" /><br />
+            <input type="text"class="form-control"  name="password" placeholder="ENTER PASSWORD" /><br />
+            <input type="text" class="form-control" name="reenterpassword" placeholder="RE-ENTER PASSWORD" /><br />
             
-            <input type="submit" name="signup" value="SIGN UP NOW">
+            <input type="submit" class="form-control submit" name="signup" value="SIGN UP NOW">
         </form>
         <div id="err_message" align="center" style="color:#0000FF"></div>
 
